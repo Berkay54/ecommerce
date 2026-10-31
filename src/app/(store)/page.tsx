@@ -1,9 +1,19 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { connection } from "next/server";
+import Loading from "@/app/loading";
 import { prisma } from "@/lib/prisma";
 import { productInclude } from "@/lib/catalog";
 import { ProductGrid } from "@/components/catalog";
-export default async function Home() {
+export default function Home() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <HomeContent />
+    </Suspense>
+  );
+}
+
+async function HomeContent() {
   await connection();
   const products = await prisma.product.findMany({
     where: { active: true },
