@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Form & Field
 
-## Getting Started
+A PostgreSQL-backed catalogue built with Next.js 16, React 19, TypeScript, Tailwind 4 and Prisma 7.10.1.
 
-First, run the development server:
+## Run on Windows
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Keep the existing `DATABASE_URL` in `.env`, pointing at the already migrated database. No schema changes or migrations are needed.
+
+```powershell
+npm.cmd install
+npm.cmd run db:generate
+npm.cmd run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit `/admin` to manage products and `/admin/categories` to create categories. The storefront is at `/`, `/products`, and `/products/[slug]`. Categories are selected with `/products?category=category-slug`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```powershell
+npm.cmd run typecheck
+npm.cmd run lint
+npm.cmd run build
+npm.cmd start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The build automatically generates Prisma Client using `prisma7.config.ts`. For future Prisma CLI commands, always supply `--config prisma7.config.ts`; the custom filename is deliberately preserved.
 
-## Learn More
+## Catalogue behaviour
 
-To learn more about Next.js, take a look at the following resources:
+- The existing Product, ProductImage, ProductVariant and Category models are used directly. No separate data store or mock catalogue exists.
+- A server-only Prisma singleton uses the PostgreSQL driver adapter and respects the URL's `schema` parameter.
+- SKU and stock live on variants. The editor supports multiple variants and preserves existing variant-specific prices. Existing variants cannot be removed through the editor, avoiding loss of inventory referenced by orders or carts.
+- Prices use the existing Decimal fields, validated as decimal strings with two-place precision. The interface currently displays USD; the schema has no currency field.
+- Every storefront query reads current database data at request time. Successful mutations invalidate route data. Only active products are public; featured products appear first on the homepage.
+- Product writes and image/variant updates are transactional. Duplicate SKUs/slugs, invalid categories, validation failures and database failures produce readable messages. Validation errors preserve product form values.
+- Deletion requires confirmation. Database foreign keys prevent deleting a product referenced by a cart or order; make that product inactive instead.
+- Image URLs use HTTP(S), one per line, with a maximum of 20. They are loaded directly by the browser without the Next.js image proxy. Missing images have a neutral placeholder.
+- Pagination limits product lists to 24 storefront items or 30 admin items per page.
+- No authentication, cart checkout or payment flow is implemented. Admin routes and write actions are publicly accessible, as requested for this stage.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Verification
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Production build, TypeScript and ESLint pass. Browser checks against PostgreSQL covered product creation, immediate storefront visibility, detail rendering, compare-price validation with form preservation, updating price, hiding inactive products, and confirmed deletion. The temporary verification product was removed. A 390px viewport check found no homepage horizontal overflow.

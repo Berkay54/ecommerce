@@ -1,0 +1,5 @@
+- generic [active] [ref=e1]:
+  - status [ref=e2]:
+    - paragraph [ref=e3]: Form & Field
+    - heading "Loading the collection?" [level=2] [ref=e4]
+  - alert [ref=e5]
