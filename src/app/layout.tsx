@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 export const metadata: Metadata = {
-  title: "Form & Field · Considered everyday",
+  title: "Form & Field · Online Alışveriş",
   description:
-    "Explore the Form & Field collection. Considered objects for everyday living.",
+    "Yeni sezon ürünlerini, kategorileri ve koleksiyonu Form & Field'da keşfedin.",
 };
 export default function RootLayout({
   children,
@@ -11,7 +11,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="tr">
       <body>{children}</body>
     </html>
   );

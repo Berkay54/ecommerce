@@ -131,6 +131,7 @@ model Address {
   addressLine String
   postalCode  String?
   createdAt   DateTime @default(now())
+  deletedAt   DateTime?
 
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -145,6 +146,9 @@ model Order {
   total       Decimal     @db.Decimal(10, 2)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  shippingAddress Json?
+  inventoryDeducted Boolean @default(true)
+  payment PaymentAttempt?
 
   userId      String
   user        User        @relation(fields: [userId], references: [id])
@@ -159,6 +163,8 @@ model OrderItem {
   id        String   @id @default(cuid())
   quantity  Int
   price     Decimal  @db.Decimal(10, 2)
+  productName String?
+  variantName String?
 
   orderId   String
   order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
@@ -192,4 +198,34 @@ model Coupon {
   active     Boolean  @default(true)
   expiresAt  DateTime?
   createdAt  DateTime @default(now())
+}
+
+model AuthRateLimit {
+  key      String   @id
+  attempts Int      @default(1)
+  resetAt  DateTime
+}
+
+enum PaymentAttemptStatus {
+  CREATED
+  INITIALIZING
+  READY
+  SUCCEEDED
+  FAILED
+  REVIEW
+}
+
+model PaymentAttempt {
+  id String @id @default(cuid())
+  orderId String @unique
+  order Order @relation(fields: [orderId], references: [id])
+  status PaymentAttemptStatus @default(CREATED)
+  token String? @unique
+  paymentPageUrl String?
+  paymentId String? @unique
+  paidAt DateTime?
+  issue String?
+  itemTransactions Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

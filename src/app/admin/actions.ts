@@ -5,29 +5,31 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import {
   amount,
-  imageUrls,
+  productImages,
   required,
   slug,
   stock,
   text,
   ValidationError,
 } from "@/lib/validation";
+import { cleanupProductBlobs } from "@/lib/blob-storage";
+import { requireAdmin } from "@/lib/auth-user";
 export type ActionState = { error?: string; success?: string };
 function errorMessage(error: unknown) {
   if (error instanceof ValidationError) return error.message;
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     if (error.code === "P2002")
-      return "That slug or SKU is already in use. Choose a unique value.";
+      return "Bu URL kısa adı veya stok kodu zaten kullanılıyor. Farklı bir değer girin.";
     if (error.code === "P2025")
-      return "This record no longer exists. Refresh and try again.";
+      return "Bu kayıt artık mevcut değil. Sayfayı yenileyip tekrar deneyin.";
     if (error.code === "P2003")
-      return "This product is referenced by a cart or order. Set it inactive instead.";
+      return "Bu ürün bir sepet veya siparişe bağlı. Silmek yerine pasif yapın.";
   }
   console.error(
     "Catalog operation failed",
     error instanceof Error ? error.message : "Unknown error",
   );
-  return "Unable to save changes. Check the database connection and try again.";
+  return "Değişiklikler kaydedilemedi. Veritabanı bağlantısını kontrol edip tekrar deneyin.";
 }
 function refresh() {
   revalidatePath("/", "layout");
@@ -37,15 +39,20 @@ export async function saveProduct(
   _state: ActionState,
   data: FormData,
 ): Promise<ActionState> {
+  await requireAdmin();
+  let removedUrls: string[] = [];
+  let cleanupOk = true;
   try {
     const name = required(data, "name");
-    const price = amount(required(data, "price"), "Price");
+    const price = amount(required(data, "price"), "Fiyat");
     const compare = text(data, "comparePrice");
-    const comparePrice = compare ? amount(compare, "Compare price") : null;
+    const comparePrice = compare ? amount(compare, "Eski fiyat") : null;
     if (comparePrice && Number(comparePrice) <= Number(price))
-      throw new ValidationError("Compare price must be greater than price.");
+      throw new ValidationError(
+        "Eski fiyat, satış fiyatından yüksek olmalıdır.",
+      );
     const categoryId = text(data, "categoryId") || null;
-    const urls = imageUrls(text(data, "images", 40000));
+    const images = productImages(text(data, "images", 60000));
     const ids = data.getAll("variantId");
     const names = data.getAll("variantName");
     const skus = data.getAll("sku");
@@ -57,7 +64,7 @@ export async function saveProduct(
       stocks.length !== skus.length ||
       ids.length !== skus.length
     )
-      throw new ValidationError("Provide between 1 and 100 variants.");
+      throw new ValidationError("1 ile 100 arasında varyant ekleyin.");
     const variants = skus.map((sku, i) => {
       if (
         typeof sku !== "string" ||
@@ -69,7 +76,9 @@ export async function saveProduct(
         typeof stocks[i] !== "string" ||
         typeof ids[i] !== "string"
       )
-        throw new ValidationError("Every variant needs a name, SKU and stock.");
+        throw new ValidationError(
+          "Her varyant için ad, stok kodu ve stok miktarı girin.",
+        );
       return {
         id: String(ids[i]),
         name: String(names[i]).trim(),
@@ -78,7 +87,7 @@ export async function saveProduct(
       };
     });
     if (new Set(variants.map((v) => v.sku)).size !== variants.length)
-      throw new ValidationError("Each variant needs a unique SKU.");
+      throw new ValidationError("Her varyantın stok kodu benzersiz olmalıdır.");
     const values = {
       name,
       slug: slug(text(data, "slug") || name),
@@ -94,8 +103,14 @@ export async function saveProduct(
         categoryId &&
         !(await tx.category.findUnique({ where: { id: categoryId } }))
       )
-        throw new ValidationError("Select an existing category.");
+        throw new ValidationError("Mevcut bir kategori seçin.");
       if (id) {
+        const previousImages = await tx.productImage.findMany({
+          where: { productId: id },
+        });
+        removedUrls = previousImages
+          .filter((image) => !images.some((next) => next.url === image.url))
+          .map((image) => image.url);
         const existing = await tx.productVariant.findMany({
           where: { productId: id },
         });
@@ -104,7 +119,7 @@ export async function saveProduct(
           variants.some((v) => v.id && !existing.some((row) => row.id === v.id))
         )
           throw new ValidationError(
-            "Variants changed. Reload this page before saving.",
+            "Varyantlar değişti. Kaydetmeden önce sayfayı yenileyin.",
           );
         await tx.product.update({
           where: { id },
@@ -112,10 +127,10 @@ export async function saveProduct(
             ...values,
             images: {
               deleteMany: {},
-              create: urls.map((url, sortOrder) => ({
+              create: images.map(({ url, alt }, sortOrder) => ({
                 url,
                 sortOrder,
-                alt: name,
+                alt,
               })),
             },
           },
@@ -137,10 +152,10 @@ export async function saveProduct(
           data: {
             ...values,
             images: {
-              create: urls.map((url, sortOrder) => ({
+              create: images.map(({ url, alt }, sortOrder) => ({
                 url,
                 sortOrder,
-                alt: name,
+                alt,
               })),
             },
             variants: {
@@ -154,29 +169,39 @@ export async function saveProduct(
         });
       }
     });
+    cleanupOk = await cleanupProductBlobs(removedUrls);
   } catch (error) {
     return { error: errorMessage(error) };
   }
   refresh();
-  redirect("/admin/products?saved=1");
+  redirect(`/admin/products?saved=1${cleanupOk ? "" : "&cleanup=1"}`);
 }
 export async function deleteProduct(
   id: string,
   _state: ActionState,
 ): Promise<ActionState> {
   void _state;
+  await requireAdmin();
+  let cleanupOk = true;
   try {
-    await prisma.product.delete({ where: { id } });
+    const deleted = await prisma.product.delete({
+      where: { id },
+      include: { images: true },
+    });
+    cleanupOk = await cleanupProductBlobs(
+      deleted.images.map((image) => image.url),
+    );
   } catch (error) {
     return { error: errorMessage(error) };
   }
   refresh();
-  redirect("/admin/products?deleted=1");
+  redirect(`/admin/products?deleted=1${cleanupOk ? "" : "&cleanup=1"}`);
 }
 export async function createCategory(
   _state: ActionState,
   data: FormData,
 ): Promise<ActionState> {
+  await requireAdmin();
   try {
     const name = required(data, "name", 100);
     await prisma.category.create({
@@ -186,5 +211,5 @@ export async function createCategory(
     return { error: errorMessage(error) };
   }
   refresh();
-  return { success: "Category created." };
+  return { success: "Kategori oluşturuldu." };
 }

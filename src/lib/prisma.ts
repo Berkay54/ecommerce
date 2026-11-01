@@ -9,10 +9,11 @@ function createClient() {
   const schema = url.searchParams.get("schema") ?? "public";
   return new PrismaClient({
     adapter: new PrismaPg(
-      { connectionString, connectionTimeoutMillis: 5000 },
+      { connectionString, connectionTimeoutMillis: 5000, max: 5 },
       { schema },
     ),
   });
 }
 export const prisma = globalForPrisma.prisma ?? createClient();
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Share one bounded pool across route bundles in the same Node process.
+globalForPrisma.prisma = prisma;

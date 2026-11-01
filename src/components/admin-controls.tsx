@@ -11,20 +11,20 @@ export function DeleteProduct({ id }: { id: string }) {
     <div>
       {!confirm ? (
         <button className="text-link danger" onClick={() => setConfirm(true)}>
-          Delete product
+          Ürünü Sil
         </button>
       ) : (
         <form action={action}>
-          <p>Delete this product permanently?</p>
+          <p>Bu ürünü kalıcı olarak silmek istediğinize emin misiniz?</p>
           <button className="button danger" disabled={pending}>
-            {pending ? "Deleting..." : "Confirm delete"}
+            {pending ? "Siliniyor…" : "Silmeyi Onayla"}
           </button>{" "}
           <button
             className="button secondary"
             type="button"
             onClick={() => setConfirm(false)}
           >
-            Cancel
+            İptal
           </button>
         </form>
       )}
@@ -40,20 +40,20 @@ export function CategoryForm() {
   const [state, action, pending] = useActionState(createCategory, {});
   return (
     <form action={action} className="panel">
-      <h2>Create category</h2>
+      <h2>Kategori Oluştur</h2>
       <label>
-        Name
+        Ad
         <input name="name" required maxLength={100} />
       </label>
       <label>
-        Slug (optional)
+        URL kısa adı (isteğe bağlı)
         <input name="slug" maxLength={180} />
       </label>
       <p aria-live="polite" className={state.error ? "notice error" : "muted"}>
         {state.error || state.success}
       </p>
       <button className="button" disabled={pending}>
-        {pending ? "Creating..." : "Create category"}
+        {pending ? "Oluşturuluyor…" : "Kategori Oluştur"}
       </button>
     </form>
   );

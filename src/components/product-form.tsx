@@ -2,6 +2,8 @@
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import { saveProduct } from "@/app/admin/actions";
+import { ProductImages } from "@/components/product-images";
+import type { ProductImageValue } from "@/lib/images";
 type Values = {
   id: string;
   name: string;
@@ -12,7 +14,7 @@ type Values = {
   categoryId: string | null;
   active: boolean;
   featured: boolean;
-  images: string;
+  images: ProductImageValue[];
   variants: { id: string; name: string; sku: string; stock: number }[];
 };
 export function ProductForm({
@@ -26,12 +28,12 @@ export function ProductForm({
     saveProduct.bind(null, product?.id ?? null),
     {},
   );
+  const [imagesBlocked, setImagesBlocked] = useState(false);
   const [draft, setDraft] = useState({
     name: product?.name ?? "",
     slug: product?.slug ?? "",
     description: product?.description ?? "",
     categoryId: product?.categoryId ?? "",
-    images: product?.images ?? "",
     price: product?.price ?? "",
     comparePrice: product?.comparePrice ?? "",
     active: product?.active ?? true,
@@ -39,13 +41,7 @@ export function ProductForm({
   });
   const field = (
     key:
-      | "name"
-      | "slug"
-      | "description"
-      | "categoryId"
-      | "images"
-      | "price"
-      | "comparePrice",
+      "name" | "slug" | "description" | "categoryId" | "price" | "comparePrice",
   ) => ({
     value: draft[key],
     onChange: (
@@ -57,29 +53,35 @@ export function ProductForm({
   const [variants, setVariants] = useState(
     product?.variants.length
       ? product.variants
-      : [{ id: "", name: "Default", sku: "", stock: 0 }],
+      : [{ id: "", name: "Standart", sku: "", stock: 0 }],
   );
   return (
-    <form action={action} className="editor">
+    <form
+      action={action}
+      className="editor"
+      onSubmit={(event) => {
+        if (imagesBlocked || pending) event.preventDefault();
+      }}
+    >
       <div className="editor-main">
         <section className="panel">
-          <p className="eyebrow">01 / The essentials</p>
-          <h2>Product story</h2>
+          <p className="eyebrow">Ürün Bilgileri</p>
+          <h2>Temel Bilgiler</h2>
           <label>
-            Name
+            Ad
             <input name="name" required maxLength={200} {...field("name")} />
           </label>
           <label>
-            URL slug
+            URL kısa adı
             <input
               name="slug"
               maxLength={180}
               {...field("slug")}
-              placeholder="Automatically generated from name"
+              placeholder="Boş bırakırsanız ürün adından oluşturulur"
             />
           </label>
           <label>
-            Description
+            Açıklama
             <textarea
               name="description"
               rows={6}
@@ -88,9 +90,9 @@ export function ProductForm({
             />
           </label>
           <label>
-            Category
+            Kategori
             <select name="categoryId" {...field("categoryId")}>
-              <option value="">Uncategorized</option>
+              <option value="">Kategorisiz</option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -99,22 +101,22 @@ export function ProductForm({
             </select>
           </label>
           <Link className="text-link" href="/admin/categories">
-            Manage categories
+            Kategorileri Yönet
           </Link>
         </section>
         <section className="panel">
-          <p className="eyebrow">02 / Inventory</p>
-          <h2>Variants & availability</h2>
+          <p className="eyebrow">Stok Yönetimi</p>
+          <h2>Varyantlar ve Stok</h2>
           <p className="muted">
-            Each variant has its own unique SKU and stock. Existing variant
-            prices are preserved.
+            Her varyantın ayrı stok kodu ve stok miktarı vardır. Mevcut varyant
+            fiyatları korunur.
           </p>
           {variants.map((v, i) => (
             <fieldset className="variant" key={v.id || `new-${i}`}>
-              <legend>Variant {i + 1}</legend>
+              <legend>Varyant {i + 1}</legend>
               <input type="hidden" name="variantId" value={v.id} />
               <label>
-                Name
+                Ad
                 <input
                   name="variantName"
                   required
@@ -132,7 +134,7 @@ export function ProductForm({
                 />
               </label>
               <label>
-                SKU
+                SKU / Stok Kodu
                 <input
                   name="sku"
                   required
@@ -148,7 +150,7 @@ export function ProductForm({
                 />
               </label>
               <label>
-                Stock
+                Stok
                 <input
                   name="stock"
                   type="number"
@@ -176,7 +178,7 @@ export function ProductForm({
                     setVariants(variants.filter((_, index) => index !== i))
                   }
                 >
-                  Remove
+                  Kaldır
                 </button>
               )}
             </fieldset>
@@ -192,33 +194,21 @@ export function ProductForm({
             }
             disabled={variants.length >= 100}
           >
-            + Add variant
+            + Varyant Ekle
           </button>
         </section>
-        <section className="panel">
-          <p className="eyebrow">03 / Photography</p>
-          <h2>Image URLs</h2>
-          <label>
-            One HTTP or HTTPS URL per line
-            <textarea
-              name="images"
-              rows={5}
-              maxLength={40000}
-              {...field("images")}
-              placeholder="https://example.com/image.jpg"
-            />
-          </label>
-          <p className="muted">
-            The first image is the cover. Up to 20 images.
-          </p>
-        </section>
+        <ProductImages
+          initialImages={product?.images ?? []}
+          disabled={pending}
+          onBlockedChange={setImagesBlocked}
+        />
       </div>
       <aside>
         <section className="panel">
-          <p className="eyebrow">Publishing</p>
-          <h2>Make it yours.</h2>
+          <p className="eyebrow">Yayın Ayarları</p>
+          <h2>Fiyat ve Yayın Durumu</h2>
           <label>
-            Price (USD)
+            Fiyat (TL)
             <input
               type="number"
               name="price"
@@ -230,7 +220,7 @@ export function ProductForm({
             />
           </label>
           <label>
-            Compare price (USD)
+            Eski Fiyat (TL)
             <input
               type="number"
               name="comparePrice"
@@ -249,7 +239,7 @@ export function ProductForm({
                 setDraft({ ...draft, active: event.target.checked })
               }
             />
-            Active on storefront
+            Mağazada aktif
           </label>
           <label className="check">
             <input
@@ -260,16 +250,21 @@ export function ProductForm({
                 setDraft({ ...draft, featured: event.target.checked })
               }
             />
-            Featured on homepage
+            Ana sayfada öne çıkar
           </label>
           <div aria-live="polite">
             {state.error && <p className="notice error">{state.error}</p>}
           </div>
-          <button className="button full" disabled={pending}>
-            {pending ? "Saving..." : "Save product"}
+          {imagesBlocked && (
+            <p className="muted" role="status">
+              Kaydetmeden önce seçtiğiniz görselleri yükleyin veya kaldırın.
+            </p>
+          )}
+          <button className="button full" disabled={pending || imagesBlocked}>
+            {pending ? "Kaydediliyor…" : "Ürünü Kaydet"}
           </button>
           <Link className="cancel" href="/admin/products">
-            Cancel
+            İptal
           </Link>
         </section>
       </aside>

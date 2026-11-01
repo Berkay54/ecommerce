@@ -8,8 +8,8 @@ export type CatalogProduct = Prisma.ProductGetPayload<{
   include: typeof productInclude;
 }>;
 export function money(value: { toString(): string } | string | number) {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("tr-TR", {
     style: "currency",
-    currency: "USD",
+    currency: "TRY",
   }).format(Number(value.toString()));
 }

@@ -1,21 +1,17 @@
-import Link from "next/link";
-import { StoreHeader } from "@/components/catalog";
+import { StoreHeader, StoreFooter } from "@/components/catalog";
+import { CartProvider } from "@/components/cart-provider";
+import { CartDrawer } from "@/components/cart";
 export default function StoreLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <CartProvider>
       <StoreHeader />
       {children}
-      <footer className="wrap footer">
-        <span className="brand">
-          FORM<span>&</span>FIELD
-        </span>
-        <p>Considered objects. Everyday living.</p>
-        <Link href="/products">Explore the collection</Link>
-      </footer>
-    </>
+      <CartDrawer />
+      <StoreFooter />
+    </CartProvider>
   );
 }

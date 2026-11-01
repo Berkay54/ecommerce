@@ -1,11 +1,28 @@
+import { requireAdmin } from "@/lib/auth-user";
 import Link from "next/link";
+import { Suspense } from "react";
+import { connection } from "next/server";
+import AdminLoading from "@/app/admin/loading";
 import { prisma } from "@/lib/prisma";
 import { productInclude, money } from "@/lib/catalog";
-export default async function Products({
-  searchParams,
-}: {
-  searchParams: Promise<{ saved?: string; deleted?: string; page?: string }>;
-}) {
+type ProductsPageProps = {
+  searchParams: Promise<{
+    saved?: string;
+    deleted?: string;
+    page?: string;
+    cleanup?: string;
+  }>;
+};
+export default function Products(props: ProductsPageProps) {
+  return (
+    <Suspense fallback={<AdminLoading />}>
+      <ProductsContent {...props} />
+    </Suspense>
+  );
+}
+async function ProductsContent({ searchParams }: ProductsPageProps) {
+  await requireAdmin();
+  await connection();
   const query = await searchParams;
   const page = Math.max(1, Math.min(100000, Number(query.page) || 1)) | 0;
   const [products, count, active, featured] = await Promise.all([
@@ -23,32 +40,38 @@ export default async function Products({
     <>
       <div className="section-heading">
         <div>
-          <p className="eyebrow">Your studio / Catalogue</p>
-          <h1>Products</h1>
+          <p className="eyebrow">Yönetim Paneli / Ürünler</p>
+          <h1>Ürünler</h1>
           <p className="muted">
-            Shape the collection, one considered detail at a time.
+            Ürünlerinizi, fiyatlarınızı ve stok durumunu buradan yönetin.
           </p>
         </div>
         <Link className="button" href="/admin/products/new">
-          + New product
+          + Yeni Ürün
         </Link>
       </div>
       {(query.saved || query.deleted) && (
         <p role="status" className="notice">
           {query.saved
-            ? "Product saved. Your storefront is up to date."
-            : "Product deleted."}
+            ? "Ürün kaydedildi. Mağazanız güncellendi."
+            : "Ürün silindi."}
+        </p>
+      )}
+      {query.cleanup && (
+        <p className="notice error" role="alert">
+          Ürün kaydedildi ancak kullanılmayan bazı görseller silinemedi.
+          Kullanılmayan dosyaları depolama panelinden kaldırabilirsiniz.
         </p>
       )}
       <div className="stats">
         <div>
-          <span>{count}</span>Total products
+          <span>{count}</span>Toplam Ürün
         </div>
         <div>
-          <span>{active}</span>Published
+          <span>{active}</span>Aktif Ürün
         </div>
         <div>
-          <span>{featured}</span>Featured
+          <span>{featured}</span>Öne Çıkan
         </div>
       </div>
       {products.length ? (
@@ -56,12 +79,12 @@ export default async function Products({
           <table>
             <thead>
               <tr>
-                <th>Product</th>
-                <th>Status</th>
-                <th>Inventory</th>
-                <th>Price</th>
+                <th>Ürün</th>
+                <th>Durum</th>
+                <th>Stok</th>
+                <th>Fiyat</th>
                 <th>
-                  <span className="sr-only">Actions</span>
+                  <span className="sr-only">İşlemler</span>
                 </th>
               </tr>
             </thead>
@@ -73,18 +96,19 @@ export default async function Products({
                       <strong>{p.name}</strong>
                     </Link>
                     <small>
-                      {p.category?.name ?? "Uncategorized"}
+                      {p.category?.name ?? "Kategorisiz"}
                       {p.featured ? " / Featured" : ""}
                     </small>
                   </td>
                   <td>
                     <span className={`status ${p.active ? "live" : ""}`}>
-                      {p.active ? "Active" : "Inactive"}
+                      {p.active ? "Aktif" : "Pasif"}
                     </span>
                   </td>
                   <td>
-                    {p.variants.reduce((sum, v) => sum + v.stock, 0)} in stock
-                    <small>{p.variants.length} variant(s)</small>
+                    {p.variants.reduce((sum, v) => sum + v.stock, 0)} adet
+                    stokta
+                    <small>{p.variants.length} varyant</small>
                   </td>
                   <td>{money(p.price)}</td>
                   <td>
@@ -92,7 +116,7 @@ export default async function Products({
                       className="text-link"
                       href={`/admin/products/${p.id}`}
                     >
-                      Edit
+                      Düzenle
                     </Link>
                   </td>
                 </tr>
@@ -102,19 +126,19 @@ export default async function Products({
         </div>
       ) : (
         <div className="empty">
-          <h2>Your collection starts here.</h2>
-          <p>Add your first product to bring the storefront to life.</p>
+          <h2>Henüz ürün eklenmedi</h2>
+          <p>Mağazanızda görüntülemek için ilk ürününüzü ekleyin.</p>
           <Link className="button" href="/admin/products/new">
-            Create a product
+            Yeni Ürün
           </Link>
         </div>
       )}
       <nav className="pagination">
         {page > 1 && (
-          <Link href={`/admin/products?page=${page - 1}`}>Previous</Link>
+          <Link href={`/admin/products?page=${page - 1}`}>Önceki</Link>
         )}
         {page * 30 < count && (
-          <Link href={`/admin/products?page=${page + 1}`}>Next</Link>
+          <Link href={`/admin/products?page=${page + 1}`}>Sonraki</Link>
         )}
       </nav>
     </>
