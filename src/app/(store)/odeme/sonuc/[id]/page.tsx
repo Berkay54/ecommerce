@@ -8,7 +8,8 @@ import {
   PaymentCartSettlement,
   PaymentRefresh,
 } from "@/components/payment-result";
-export const metadata = { title: "Ödeme Sonucu · Form & Field" };
+import { brandTitle } from "@/lib/brand";
+export const metadata = { title: brandTitle("Ödeme Sonucu"), robots: { index: false, follow: false } };
 type PaymentResultProps = {
   params: Promise<{ id: string }>;
 };

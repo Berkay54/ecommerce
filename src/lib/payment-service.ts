@@ -1,4 +1,8 @@
 import "server-only";
+import {
+  enqueueOrderNotification,
+  scheduleOrderEmails,
+} from "@/lib/order-notifications";
 import { isIP } from "node:net";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -306,6 +310,7 @@ export async function verifyAndCompletePayment(token: string) {
         where: { id: payment.id },
         data: { ...receipt, status: "SUCCEEDED", issue: null },
       });
+      await enqueueOrderNotification(tx, order.id, "paid");
       await tx.cartItem.deleteMany({
         where: { cart: { userId: order.userId } },
       });
@@ -318,5 +323,6 @@ export async function verifyAndCompletePayment(token: string) {
       data: { ...receipt, status: "REVIEW", issue: error.message },
     });
   }
+  scheduleOrderEmails();
   return payment.id;
 }

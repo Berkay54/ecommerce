@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { orderInclude } from "@/lib/order-service";
 import { OrderDetails } from "@/components/order-details";
 import { OrderStatusForm } from "@/components/order-status-form";
+import { ShipmentForm } from "@/components/fulfillment-forms";
 type AdminOrderProps = {
   params: Promise<{ id: string }>;
 };
@@ -30,6 +31,7 @@ async function AdminOrderContent({ params }: AdminOrderProps) {
     <>
       <h1>Sipariş Detayı</h1>
       <OrderDetails order={order} admin />
+      {["PROCESSING", "SHIPPED", "DELIVERED"].includes(order.status) && <ShipmentForm key={`${order.shippingCarrier}-${order.trackingNumber}`} id={order.id} carrier={order.shippingCarrier} trackingNumber={order.trackingNumber} />}
       <OrderStatusForm
         key={order.status}
         id={order.id}

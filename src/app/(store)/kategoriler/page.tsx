@@ -4,7 +4,8 @@ import Loading from "@/app/loading";
 import { connection } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Icon } from "@/components/icons";
-export const metadata = { title: "Kategoriler · Form & Field" };
+import { brandTitle } from "@/lib/brand";
+export const metadata = { title: brandTitle("Kategoriler") };
 export default function CategoriesPage() {
   return (
     <Suspense fallback={<Loading />}>

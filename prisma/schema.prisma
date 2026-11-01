@@ -149,6 +149,10 @@ model Order {
   shippingAddress Json?
   inventoryDeducted Boolean @default(true)
   payment PaymentAttempt?
+  shippingCarrier String?
+  trackingNumber String?
+  returns ReturnRequest[]
+  notifications OrderNotification[]
 
   userId      String
   user        User        @relation(fields: [userId], references: [id])
@@ -181,6 +185,7 @@ model Review {
   rating    Int
   comment   String?
   createdAt DateTime @default(now())
+  approved Boolean @default(false)
 
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -189,6 +194,71 @@ model Review {
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
+  @@index([productId, approved, createdAt])
+}
+
+model Campaign {
+  id String @id @default(cuid())
+  label String
+  title String
+  emphasis String
+  description String
+  href String
+  action String
+  image String
+  alt String
+  theme String @default("forest")
+  note String
+  showDiscount Boolean @default(false)
+  active Boolean @default(false)
+  sortOrder Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ReturnStatus {
+  REQUESTED
+  APPROVED
+  REJECTED
+  RECEIVED
+  CLOSED
+}
+
+model ReturnRequest {
+  id String @id @default(cuid())
+  orderId String @unique
+  order Order @relation(fields: [orderId], references: [id])
+  reason String
+  status ReturnStatus @default(REQUESTED)
+  adminNote String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum NotificationStatus {
+  PENDING
+  SENDING
+  SENT
+  FAILED
+  REVIEW
+}
+
+model OrderNotification {
+  id String @id
+  orderId String
+  order Order @relation(fields: [orderId], references: [id])
+  recipient String
+  subject String
+  body String
+  sender String?
+  status NotificationStatus @default(PENDING)
+  attempts Int @default(0)
+  firstAttemptAt DateTime?
+  lockedUntil DateTime?
+  sentAt DateTime?
+  lastError String?
+  createdAt DateTime @default(now())
+  @@index([status, createdAt])
 }
 
 model Coupon {

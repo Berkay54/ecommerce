@@ -4,7 +4,8 @@ import { connection } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Checkout } from "@/components/checkout";
 import { paymentConfig } from "@/lib/payment-validation";
-export const metadata = { title: "Siparişi Tamamla · Form & Field" };
+import { brandTitle } from "@/lib/brand";
+export const metadata = { title: brandTitle("Siparişi Tamamla"), robots: { index: false, follow: false } };
 export default function CheckoutPage() {
   return (
     <Suspense

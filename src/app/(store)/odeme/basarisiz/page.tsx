@@ -1,5 +1,6 @@
 import Link from "next/link";
-export const metadata = { title: "Ödeme Gerçekleştirilemedi · Form & Field" };
+import { brandTitle } from "@/lib/brand";
+export const metadata = { title: brandTitle("Ödeme Gerçekleştirilemedi"), robots: { index: false, follow: false } };
 export default function PaymentFailure() {
   return (
     <main className="wrap order-page">

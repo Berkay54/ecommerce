@@ -7,7 +7,8 @@ import { prisma } from "@/lib/prisma";
 import { orderInclude } from "@/lib/order-service";
 import { OrderDetails } from "@/components/order-details";
 import { PaymentCartSettlement } from "@/components/payment-result";
-export const metadata = { title: "Sipariş Detayı · Form & Field" };
+import { brandTitle } from "@/lib/brand";
+export const metadata = { title: brandTitle("Sipariş Detayı"), robots: { index: false, follow: false } };
 type OrderPageProps = {
   params: Promise<{ orderNumber: string }>;
 };

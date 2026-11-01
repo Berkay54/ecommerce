@@ -2,7 +2,8 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { currentUser, safeReturnTo } from "@/lib/auth-user";
 import { AuthForm } from "@/components/auth-form";
-export const metadata = { title: "Üye Ol · Form & Field" };
+import { brandTitle } from "@/lib/brand";
+export const metadata = { title: brandTitle("Üye Ol"), robots: { index: false, follow: false } };
 type RegisterPageProps = {
   searchParams: Promise<{ next?: string }>;
 };

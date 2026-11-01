@@ -11,6 +11,8 @@ import {
 } from "@/components/store-actions";
 import { Icon } from "@/components/icons";
 import { AccountMenu, MobileAccountLinks } from "@/components/account-menu";
+import { BRAND_NAME, BRAND_WORDMARK } from "@/lib/brand";
+import { SearchBox } from "@/components/search-box";
 export function ProductGrid({ products }: { products: CatalogProduct[] }) {
   return products.length ? (
     <div className="product-grid">
@@ -129,24 +131,10 @@ export function StoreHeader() {
             <MobileAccountLinks />
           </Suspense>
         </MobileMenu>
-        <Link href="/" className="brand" aria-label="Form & Field ana sayfa">
-          FORM<span>&</span>FIELD
+        <Link href="/" className="brand" aria-label={`${BRAND_NAME} ana sayfa`}>
+          {BRAND_WORDMARK}
         </Link>
-        <form action="/products" className="header-search" role="search">
-          <label className="sr-only" htmlFor="store-search">
-            Ürün, kategori veya marka ara
-          </label>
-          <input
-            id="store-search"
-            name="q"
-            type="search"
-            placeholder="Ürün, kategori veya marka ara"
-            maxLength={150}
-          />
-          <button type="submit" aria-label="Ara">
-            <Icon name="search" />
-          </button>
-        </form>
+        <SearchBox />
         <HeaderActions
           account={
             <Suspense
@@ -206,8 +194,12 @@ export function StoreFooter() {
     <footer className="store-footer">
       <div className="wrap footer-grid">
         <div>
-          <Link href="/" className="brand">
-            FORM<span>&</span>FIELD
+          <Link
+            href="/"
+            className="brand"
+            aria-label={`${BRAND_NAME} ana sayfa`}
+          >
+            {BRAND_WORDMARK}
           </Link>
           <p>
             Günlük hayatınıza iyi gelen
@@ -251,7 +243,7 @@ export function StoreFooter() {
         </div>
       </div>
       <div className="wrap footer-bottom">
-        <p>© 2026 Form & Field. Tüm hakları saklıdır.</p>
+        <p>© 2026 {BRAND_NAME}. Tüm hakları saklıdır.</p>
         <span>Özenle seçin, keyifle kullanın.</span>
       </div>
     </footer>

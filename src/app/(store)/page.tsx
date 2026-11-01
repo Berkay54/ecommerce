@@ -5,6 +5,11 @@ import { connection } from "next/server";
 import Loading from "@/app/loading";
 import { prisma } from "@/lib/prisma";
 import { productInclude } from "@/lib/catalog";
+import {
+  CampaignSlider,
+  type CampaignSlide,
+} from "@/components/campaign-slider";
+import { defaultCampaigns } from "@/lib/home-campaigns";
 import { ProductGrid } from "@/components/catalog";
 import { Icon, type IconName } from "@/components/icons";
 export default function Home() {
@@ -53,9 +58,42 @@ async function HomeContent() {
       console.error("Ana sayfa: kategoriler yüklenemedi.", error);
       return [];
     });
-  const hero =
-    featured.find((product) => product.images.length)?.images[0] ??
-    newest.find((product) => product.images.length)?.images[0];
+  const campaignProducts = [
+    ...new Map(
+      [...featured, ...newest].map((product) => [product.id, product]),
+    ).values(),
+  ];
+  const maxDiscount = Math.max(
+    0,
+    ...campaignProducts
+      .filter((product) =>
+        product.variants.some((variant) => variant.stock > 0),
+      )
+      .map((product) => {
+        const original = Number(product.comparePrice);
+        return original > Number(product.price)
+          ? Math.round((1 - Number(product.price) / original) * 100)
+          : 0;
+      }),
+  );
+  const managed = await prisma.campaign
+    .findMany({ orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }] })
+    .catch(() => null);
+  const slides: CampaignSlide[] = managed?.length
+    ? managed
+        .filter((slide) => slide.active)
+        .slice(0, 6)
+        .map((slide) => ({
+          ...slide,
+          theme:
+            slide.theme === "sand" || slide.theme === "wine"
+              ? slide.theme
+              : "forest",
+          ...(slide.showDiscount && maxDiscount > 0
+            ? { offer: "%" + maxDiscount + "'ye" }
+            : {}),
+        }))
+    : defaultCampaigns(maxDiscount);
   const benefits: { icon: IconName; title: string; copy: string }[] = [
     {
       icon: "truck",
@@ -72,54 +110,22 @@ async function HomeContent() {
   ];
   return (
     <main className="wrap home-page">
-      <section className="hero">
-        <div className="hero-copy">
-          <span className="season-label">Yeni Sezon</span>
-          <h1>
-            Tarzını yenile.
-            <br />
-            <em>Kendine yer aç.</em>
-          </h1>
-          <p>
-            Yeni sezonun öne çıkan parçalarını keşfet.
-            <br />
-            Günlük hayatına iyi gelen seçimler burada.
-          </p>
-          <div className="hero-actions">
-            <Link href="/products" className="button">
-              Alışverişe Başla
-              <Icon name="arrow" width={18} />
-            </Link>
-            <Link href="/products?sort=newest" className="button secondary">
-              Yeni Gelenler
-            </Link>
-          </div>
-        </div>
-        <div className={`hero-visual${hero ? " has-image" : ""}`}>
-          {hero ? (
-            <Image
-              src={hero.url}
-              alt={hero.alt || "Yeni sezon koleksiyonundan"}
-              fill
-              unoptimized
-              sizes="(max-width: 650px) 100vw, 50vw"
-            />
-          ) : (
-            <div className="season-typography">
-              <span>FORM & FIELD</span>
-              <strong>
-                Güzel şeylere
-                <br />
-                yer açın.
-              </strong>
-              <p>Yeni sezon · Yeni keşifler</p>
-            </div>
-          )}
-        </div>
-      </section>
+      <CampaignSlider slides={slides} />
+      <div className="home-manifesto">
+        <span>GİY. HİSSET. KENDİN OL.</span>
+        <p>İyi stil, küçük seçimlerle başlar.</p>
+        <Link href="/products">
+          Özen ile keşfet <Icon name="arrow" width={18} />
+        </Link>
+      </div>
       <section className="home-section" id="categories">
         <div className="section-heading">
-          <h2>Kategorileri Keşfet</h2>
+          <div>
+            <span className="editorial-kicker">
+              01 / Kendine bir yerden başla
+            </span>
+            <h2>Kategorileri Keşfet</h2>
+          </div>
           <Link href="/kategoriler" className="text-link">
             Tüm Kategoriler
             <Icon name="arrow" width={16} />
@@ -167,6 +173,7 @@ async function HomeContent() {
       <section className="home-section">
         <div className="section-heading">
           <div>
+            <span className="editorial-kicker">02 / Özen seçkisi</span>
             <h2>Öne Çıkan Ürünler</h2>
             <p>Seçiminizi kolaylaştıran, özenle seçilmiş parçalar.</p>
           </div>
@@ -177,13 +184,21 @@ async function HomeContent() {
         </div>
         <ProductGrid products={featured} />
       </section>
-      <section className="campaign-banner">
-        <div>
-          <span className="season-label">Koleksiyona Yakından Bakın</span>
-          <h2>Sezonun favorileri</h2>
-          <p>Seçili ürünleri ve güncel fiyatlarını keşfedin.</p>
+      <section className="campaign-banner editorial-banner">
+        <div className="editorial-banner-image">
+          <Image
+            src="/campaigns/street.webp"
+            alt="Şehirde stil ilhamı"
+            fill
+            sizes="(max-width: 650px) 100vw, 40vw"
+          />
         </div>
-        <Link className="button" href="/products?campaign=1">
+        <div>
+          <span className="season-label">Stil, detaylarda saklı</span>
+          <h2>Her günün favorileri.</h2>
+          <p>Her gün yeniden giymek isteyeceğin parçalarla tanış.</p>
+        </div>
+        <Link className="button" href="/products?featured=1">
           Koleksiyonu Keşfet
           <Icon name="arrow" width={18} />
         </Link>
@@ -191,6 +206,7 @@ async function HomeContent() {
       <section className="home-section">
         <div className="section-heading">
           <div>
+            <span className="editorial-kicker">03 / Keşfetmeye devam</span>
             <h2>Yeni Gelenler</h2>
             <p>Koleksiyona en son katılanlarla tanışın.</p>
           </div>

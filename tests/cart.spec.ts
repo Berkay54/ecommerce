@@ -174,6 +174,7 @@ test("real product: variants, merging, stock limits, persistence across browser 
         : "/products",
     );
     if (!process.env.E2E_PRODUCT_SLUG) {
+      await expect(page.locator(".catalog-title:visible h1")).toBeVisible();
       const product = page.locator(".product-image > a").first();
       test.skip(
         !(await product.count()),
@@ -204,9 +205,9 @@ test("real product: variants, merging, stock limits, persistence across browser 
     const current = (await response.json()).lines[0];
     if (current.stock > 1) {
       await add.click();
-      await expect(page.getByRole("button", { name: /Sepetim/ })).toContainText(
-        "(2)",
-      );
+      await expect(
+        page.getByRole("button", { name: /Sepetim/ }),
+      ).toHaveAttribute("aria-label", "Sepetim, 2 ürün");
     }
     await page.goto("/cart");
     await expect(page.locator(".cart-line")).toHaveCount(1);

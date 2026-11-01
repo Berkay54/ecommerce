@@ -3,7 +3,8 @@ import { Suspense } from "react";
 import Loading from "@/app/loading";
 import { requireUser } from "@/lib/auth-user";
 import { logout } from "@/app/auth-actions";
-export const metadata = { title: "Hesabım · Form & Field" };
+import { brandTitle } from "@/lib/brand";
+export const metadata = { title: brandTitle("Hesabım"), robots: { index: false, follow: false } };
 export default function AccountLayout({
   children,
 }: {

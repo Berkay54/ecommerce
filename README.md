@@ -1,4 +1,8 @@
-# Form & Field
+# Özen
+
+Yeni ürün detayı, arama önerileri, admin kampanya yönetimi, kargo/iade talepleri, onaylı yorumlar, e-posta kuyruğu ve yayına hazırlık için [Mağaza Geliştirmeleri](./docs/STOREFRONT-GROWTH.md) belgesine bakın. Gerçek e-posta gönderimi ve arama motoru indeksleme, alan adı/katalog kurulumu tamamlanana kadar varsayılan olarak kapalıdır.
+
+Türkçe marka adı ve kelime logosu `src/lib/brand.ts` üzerinden yönetilir. Header, footer, yönetim paneli ve sekme başlıkları bu bilgiyi kullanır; sekme simgesi `src/app/icon.svg` içindeki Ö monogramıdır.
 
 Türkçe mağaza ve yönetim arayüzü için [Tasarım Raporu](./TASARIM-RAPORU.md), üyelik/adres için [Hesap ve Sipariş Raporu](./HESAP-SIPARIS-RAPORU.md), güncel ödeme ve stok davranışı için [iyzico Sandbox Raporu](./IYZICO-SANDBOX-RAPORU.md) dosyasına bakın. Arayüz TL (`tr-TR` / `TRY`) kullanır. Üyelik ve sipariş yönetimi etkindir; ödeme yalnızca iyzico sandbox ortamındadır. Production ödeme, kargo, kupon ve bülten entegrasyonları eklenmedi.
 
@@ -28,7 +32,7 @@ The build automatically generates Prisma Client using `prisma7.config.ts`. For f
 
 ## Catalogue behaviour
 
-- The existing Product, ProductImage, ProductVariant and Category models are used directly. No separate data store or mock catalogue exists.
+- The existing Product, ProductImage, ProductVariant and Category models are used directly. The optional demo seed below adds clearly marked test products to the same database.
 - A server-only Prisma singleton uses the PostgreSQL driver adapter and respects the URL's `schema` parameter.
 - SKU and stock live on variants. The editor supports multiple variants and preserves existing variant-specific prices. Existing variants cannot be removed through the editor, avoiding loss of inventory referenced by orders or carts.
 - Prices use the existing Decimal fields, validated as decimal strings with two-place precision. The interface displays TRY; the schema has no currency field.
@@ -38,6 +42,22 @@ The build automatically generates Prisma Client using `prisma7.config.ts`. For f
 - Photography is managed in the existing product editor: upload multiple files, edit alt text, move images earlier/later, and remove images. The first image is the cover. Existing HTTP(S) image URLs remain supported. Images load directly without the Next.js image proxy.
 - Pagination limits product lists to 24 storefront items or 30 admin items per page.
 - Guest shopping bags are available through the header drawer and `/cart`. Checkout requires authentication and creates PENDING orders without reserving/decrementing stock. Only a server-verified iyzico sandbox payment decrements stock and marks PAID in one transaction. Paid-but-unfulfillable results enter REVIEW for operator attention. Admin pages, write actions and image APIs require ADMIN. Production payments and shipping integrations remain deferred.
+
+## TEST / DEMO ürün kataloğu
+
+Mağazayı, ürün detayını, sepeti ve sandbox akışını test etmek için isteğe bağlı çalıştırın:
+
+```powershell
+npm.cmd run seed
+```
+
+`prisma/seed.cjs` mevcut PostgreSQL bağlantısını kullanır; ek paket gerektirmez. 5 kategori, 12 TEST/DEMO ürün, 51 benzersiz `DEMO-` SKU'lu varyant ve erişilebildiğinde 24 HTTPS görsel ekler. Ürün açıklamaları ve görsel alt metinleri demo/temsili olduklarını belirtir. `demo-` slug'ları ve sabit seed ID'leri gerçek ürünlerle karışmayı önler; aynı slug/SKU başka bir kayda aitse işlem bütünüyle geri alınır.
+
+Kategoriler ve ürünler slug üzerinden upsert edilir. Tekrar çalıştırmak mevcut ürünleri, fiyatları, stokları, varyant ID'lerini veya admin düzenlemelerini değiştirmez; kullanıcı/sipariş oluşturmaz veya silmez. Schema, migration ve Prisma config değişmez. Seed otomatik olarak deploy, install veya uygulama başlangıcında çalışmaz.
+
+Görseller kategorilere uygun temsili Unsplash fotoğraflarıdır; gerçek ürün fotoğrafı değildir. Script URL'leri HTTPS üzerinden indirip görsel formatını kontrol eder; erişilemeyen URL'yi veritabanına yazmaz. Görseller erişilemiyorsa mevcut görselsiz ürün fallback'i kullanılır. Mevcut demo ürünlerinin görselleri tekrar yazılmadığından, sonradan admin üzerinden URL eklenebilir. Binary veri PostgreSQL'e kaydedilmez ve Vercel Blob token'ı gerekmez.
+
+Örnek ürün: `/products/demo-oversize-basic-tisort`. Bu üründe S/M/L/XL stokları 12/18/15/8'dir. Tükenen varyant kontrolü için `demo-minimal-logo-tisort` XL stok değeri 0'dır. Bu ürünler gerçek satış ve teslimat için kullanılmamalıdır.
 
 ## iyzico sandbox setup
 
@@ -84,14 +104,14 @@ npx.cmd playwright install chromium
 npm.cmd run test:e2e
 ```
 
-Playwright runs the production server on port 3100. Tests cover input validation, stale cart reconciliation, malformed localStorage recovery, network failure/retry without data loss, the empty cart, drawer focus/Escape, desktop/mobile overflow, image file validation, pre-upload previews, ordering, alt text, removal and missing-storage errors. They do not create mock products or mutate catalog data. A populated-bag test uses an existing real product, checking required variants, merge behavior, quantity/stock limits, refresh, a full browser close/reopen, remove and clear. It is explicitly skipped if no real products or available variants exist. To target a particular real product:
+Playwright runs the production server on port 3100. Tests cover input validation, stale cart reconciliation, malformed localStorage recovery, network failure/retry without data loss, the empty cart, drawer focus/Escape, desktop/mobile overflow, image file validation, pre-upload previews, ordering, alt text, removal and missing-storage errors. Tests do not seed products or mutate catalog data. A populated-bag test uses an existing catalog product, including an explicitly seeded demo product, checking required variants, merge behavior, quantity/stock limits, refresh, a full browser close/reopen, remove and clear. It is skipped if no products or available variants exist. To target the demo T-shirt:
 
 ```powershell
-$env:E2E_PRODUCT_SLUG = "your-real-product-slug"
+$env:E2E_PRODUCT_SLUG = "demo-oversize-basic-tisort"
 npm.cmd run test:e2e
 ```
 
-Latest full verification on this PC (1 November 2026): TypeScript and production build passed; ESLint has 0 errors and 1 existing unused-import warning in `prisma7.config.ts`. Playwright completed with **19 passed, 12 skipped**. Real sandbox payment, stock deduction, duplicate callback and authenticated customer/admin flows remain unverified without sandbox credentials, real products and supplied account credentials. No mock users, products, orders or payments were created. See the [sandbox report](./IYZICO-SANDBOX-RAPORU.md) for test limits and opt-in settings. The current local Prisma instance is `ecommerce-home`; if stopped, start it with `npx.cmd prisma dev start ecommerce-home --config prisma7.config.ts`. Its data and migrations were preserved.
+Latest full verification on this PC (1 November 2026): TypeScript and production build passed; ESLint has 0 errors and 1 existing unused-import warning in `prisma7.config.ts`. After the explicitly requested demo seed, Playwright completed with **20 passed, 11 skipped**. Additional development-browser checks passed: 5 featured homepage products, 12 catalog products, all 5 category filters, all 12 detail pages with working primary images/two-image galleries, an unavailable variant and checkout login protection. A second seed run created zero rows; full demo-data hashes, stock, user and order counts remained identical. No user/order/payment was created by the seed or these checks. Sandbox payment/stock deduction/duplicate callback and authenticated customer/admin workflows remain conditional and were not executed. See the [sandbox report](./IYZICO-SANDBOX-RAPORU.md) for opt-in settings. This PC now uses the existing Supabase database through `DATABASE_URL`; do not replace that URL or recreate the database to run the seed.
 
 Real Blob upload and product-save verification require the Blob token and real product data. Finish this flow once those are configured:
 

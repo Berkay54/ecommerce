@@ -10,6 +10,10 @@ import { statusTransitions } from "@/lib/order-display";
 import { Prisma, OrderStatus } from "@prisma/client";
 import { headers } from "next/headers";
 import {
+  enqueueOrderNotification,
+  scheduleOrderEmails,
+} from "@/lib/order-notifications";
+import {
   paymentConfig,
   PaymentConfigurationError,
 } from "@/lib/payment-validation";
@@ -108,6 +112,13 @@ export async function changeOrderStatus(
                 "Sandbox ödemesi yalnızca doğrulanmış callback ile onaylanır. Ödeme iptal/iade işlemleri bu aşamada desteklenmiyor.",
               );
             if (order.status === next) return;
+            if (
+              next === "SHIPPED" &&
+              (!order.shippingCarrier || !order.trackingNumber)
+            )
+              throw new ValidationError(
+                "Önce kargo firması ve takip numarasını kaydedin.",
+              );
             if (!statusTransitions[order.status].includes(next))
               throw new ValidationError(
                 "Bu durum değişikliğine izin verilmiyor. Güncel sipariş durumunu kontrol edin.",
@@ -135,6 +146,7 @@ export async function changeOrderStatus(
                       "İptal sırasında stok iade edilemedi. Ürünü kontrol edin.",
                     );
                 }
+            await enqueueOrderNotification(tx, id, `status:${next}`);
           },
           {
             isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
@@ -161,6 +173,7 @@ export async function changeOrderStatus(
     };
   }
   revalidatePath("/", "layout");
+  scheduleOrderEmails();
   return { success: "Sipariş durumu güncellendi." };
 }
 

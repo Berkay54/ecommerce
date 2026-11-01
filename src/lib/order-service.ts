@@ -4,8 +4,13 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { cartKey, type CartInput } from "@/lib/cart";
 import { ValidationError } from "@/lib/validation";
+import {
+  enqueueOrderNotification,
+  scheduleOrderEmails,
+} from "@/lib/order-notifications";
 
 export const orderInclude = {
+  returns: { orderBy: { createdAt: "desc" } },
   payment: {
     select: {
       id: true,
@@ -66,7 +71,7 @@ export async function createCustomerOrder(
     .digest("hex");
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      return await prisma.$transaction(
+      const number = await prisma.$transaction(
         async (tx) => {
           const existing = await tx.order.findUnique({
             where: { id },
@@ -169,6 +174,7 @@ export async function createCustomerOrder(
               items: { create: lines },
             },
           });
+          await enqueueOrderNotification(tx, order.id, "created");
           return order.orderNumber;
         },
         {
@@ -177,6 +183,8 @@ export async function createCustomerOrder(
           timeout: 15000,
         },
       );
+      scheduleOrderEmails();
+      return number;
     } catch (error) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&

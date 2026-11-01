@@ -2,6 +2,8 @@ import Link from "next/link";
 import { money } from "@/lib/catalog";
 import { orderDate, orderStatuses } from "@/lib/order-display";
 import type { OrderDetail } from "@/lib/order-service";
+import { returnStatuses } from "@/lib/fulfillment";
+import { ReturnForm, AdminReturnForm } from "@/components/fulfillment-forms";
 export function OrderDetails({
   order,
   admin = false,
@@ -83,6 +85,43 @@ export function OrderDetails({
             </p>
           )}
         </section>
+      )}
+      {order.trackingNumber && (
+        <section className="panel">
+          <h2>Kargo Takibi</h2>
+          <p>
+            <strong>{order.shippingCarrier}</strong>
+          </p>
+          <p>
+            Takip numarası:{" "}
+            <strong className="tracking-number">{order.trackingNumber}</strong>
+          </p>
+          <p className="muted">
+            Gönderinizi kargo firmasının takip ekranında bu numarayla
+            sorgulayabilirsiniz.
+          </p>
+        </section>
+      )}
+      {order.returns.map((request) => (
+        <section className="panel" key={request.id}>
+          <h2>İade Talebi · {returnStatuses[request.status]}</h2>
+          <p className="review-comment">{request.reason}</p>
+          {request.adminNote && (
+            <p className="notice review-comment">
+              Mağaza açıklaması: {request.adminNote}
+            </p>
+          )}
+          {admin && (
+            <AdminReturnForm
+              key={`${request.id}-${request.status}`}
+              id={request.id}
+              status={request.status}
+            />
+          )}
+        </section>
+      ))}
+      {!admin && order.status === "DELIVERED" && !order.returns.length && (
+        <ReturnForm id={order.id} />
       )}
       <div className="order-detail-layout">
         <section className="panel">

@@ -1,4 +1,18 @@
-# Form & Field tasarım bağlamı
+# Özen tasarım bağlamı
+
+## Alışveriş detayları ve işletme ekranları
+
+Ürün galerisinde yerel dialog ile büyütme ve yakınlaştırma; doğrulanmamış ölçü üretmeyen beden rehberi; mobilde aynı sepet formunu kullanan sabit satın alma çubuğu bulunur. Arama alanı mevcut header ölçülerini koruyan klavyeli ürün/kategori önerileriyle genişletildi. Yorumlar yalnızca onaylı satın alma kayıtlarından gelir. Kampanya, yorum, iade ve bildirim yönetimi mevcut admin panelinde sade formlar/paneller kullanır. Harici UI bağımlılığı eklenmedi.
+
+21st araştırması: Async Autocomplete (28514), Shop by Category Grid (29288). Mevcut proje bileşenleri ve native dialog yeniden kullanıldı. CLI bileşen incelemesinde bulgu yok. Kurulum ve sınırlar `docs/STOREFRONT-GROWTH.md` içinde açıklanır.
+
+## Ana sayfa kampanya vitrini
+
+Kullanıcının daha görsel bir vitrin talebiyle ana sayfada büyük Georgia başlıklar, koyu orman yeşili / kum / bordo slayt temaları ve yerel WebP moda fotoğrafları kullanılır. Katalog ve alışveriş akışının mevcut bileşenleri korunur. Kategori kartları editoryal fotoğraf kutuları, bölüm başlıkları numaralı küçük etiketlerle düzenlenir.
+
+Slayt gösterisi 6,5 saniyede bir CSS opacity geçişi yapar. Manuel seçim otomatik geçişi durdurur; klavye, dokunma, durdurma kontrolü, görünürlük ve reduced-motion tercihi desteklenir. Fotoğraflar temsili olarak işaretlenir. İndirim yüzdesi yalnızca yüklenen, stokta bulunan katalog ürünlerinin gerçek fiyatlarından hesaplanır; indirim yoksa genel koleksiyon metni gösterilir. Harici bileşen veya animasyon bağımlılığı eklenmez.
+
+21st araştırması: Hero Carousel (24752), Editorial Collage Hero (19074). Film şeridi gezinmesi ve editoryal başlık/görsel dengesi referans alındı; proje için özgün ve daha sade kontroller uygulandı. Kaynak fotoğraflar: `public/campaigns/SOURCES.md`.
 
 Türkçe, alışıldık e-ticaret gezinmesi. Krem zemin (#fafaf7), beyaz yüzeyler, koyu yeşil metin (#24382d), yeşil CTA (#244b37), ince kenarlıklar (#e2e6df). Arial gövde, yalnızca sezon banner'larında Georgia italik vurgu. 4–6 px kart/düğme köşeleri, ölçülü boşluklar, sinematik animasyon yok.
 

@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { BRAND_NAME } from "@/lib/brand";
 const pages: Record<string, { title: string; copy: string }> = {
   hakkimizda: {
     title: "Hakkımızda",
-    copy: "Form & Field, günlük yaşam için özenle seçilmiş ürünleri bir araya getirir. Koleksiyonumuzu keşfedebilir ve favorilerinizi bu tarayıcıda kaydedebilirsiniz.",
+    copy: `${BRAND_NAME}, günlük yaşam için özenle seçilmiş ürünleri bir araya getirir. Koleksiyonumuzu keşfedebilir ve favorilerinizi bu tarayıcıda kaydedebilirsiniz.`,
   },
   iletisim: {
     title: "İletişim",

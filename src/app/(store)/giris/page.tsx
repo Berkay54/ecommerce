@@ -2,7 +2,8 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { currentUser, safeReturnTo } from "@/lib/auth-user";
 import { AuthForm } from "@/components/auth-form";
-export const metadata = { title: "Giriş Yap · Form & Field" };
+import { brandTitle } from "@/lib/brand";
+export const metadata = { title: brandTitle("Giriş Yap"), robots: { index: false, follow: false } };
 type LoginPageProps = {
   searchParams: Promise<{ next?: string; kayit?: string }>;
 };

@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { BRAND_NAME } from "@/lib/brand";
+import { publicIndexing, siteOrigin } from "@/lib/site";
 export const metadata: Metadata = {
-  title: "Form & Field · Online Alışveriş",
-  description:
-    "Yeni sezon ürünlerini, kategorileri ve koleksiyonu Form & Field'da keşfedin.",
+  title: `${BRAND_NAME} · Çevrim İçi Alışveriş`,
+  description: `Yeni sezon ürünleri, kategoriler ve özenle seçilmiş koleksiyonlar: ${BRAND_NAME}.`,
+  metadataBase: siteOrigin() ? new URL(siteOrigin()!) : undefined,
+  robots: publicIndexing()
+    ? { index: true, follow: true }
+    : { index: false, follow: false },
 };
 export default function RootLayout({
   children,
@@ -11,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="tr">
+    <html lang="tr" data-scroll-behavior="smooth">
       <body>{children}</body>
     </html>
   );

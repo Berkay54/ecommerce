@@ -136,11 +136,14 @@ export async function DELETE(request: Request) {
         },
         { status: 400 },
       );
-    if (await prisma.productImage.count({ where: { url: body.url } }))
+    if (
+      (await prisma.productImage.count({ where: { url: body.url } })) ||
+      (await prisma.campaign.count({ where: { image: body.url } }))
+    )
       return Response.json(
         {
           error:
-            "Görseli kaldırmak için ürünü kaydedin. Yayımlanan görseller kaydedene kadar korunur.",
+            "Görsel bir ürün veya kampanyada kullanılıyor. Önce ilgili kaydı değiştirip kaydedin.",
         },
         { status: 409 },
       );

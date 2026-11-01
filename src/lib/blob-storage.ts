@@ -22,6 +22,7 @@ export function isProductBlob(value: string) {
 export async function deleteUnreferencedBlob(url: string) {
   if (!isProductBlob(url)) return;
   if (await prisma.productImage.count({ where: { url } })) return;
+  if (await prisma.campaign.count({ where: { image: url } })) return;
   await del(url);
 }
 export async function cleanupProductBlobs(urls: string[]) {

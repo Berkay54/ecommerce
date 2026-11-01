@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useId, useRef, useState } from "react";
 import { cartMoney } from "@/lib/cart";
 import { useCart } from "@/components/cart-provider";
 import { FavoriteButton } from "@/components/store-actions";
@@ -9,10 +9,12 @@ export function AddToCart({
   variants,
   basePriceCents,
   comparePriceCents,
+  productName,
 }: {
   productId: string;
   basePriceCents: number;
   comparePriceCents: number | null;
+  productName: string;
   variants: {
     id: string;
     name: string;
@@ -22,6 +24,9 @@ export function AddToCart({
   }[];
 }) {
   const cart = useCart();
+  const formId = useId();
+  const guide = useRef<HTMLDialogElement>(null);
+  const form = useRef<HTMLFormElement>(null);
   const [variantId, setVariantId] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [feedback, setFeedback] = useState<{
@@ -67,6 +72,8 @@ export function AddToCart({
             : "Tükendi"}
       </p>
       <form
+        ref={form}
+        id={formId}
         className="purchase-form"
         onSubmit={async (event) => {
           event.preventDefault();
@@ -79,6 +86,13 @@ export function AddToCart({
         }}
       >
         <label htmlFor="purchase-variant">Varyant Seçimi</label>
+        <button
+          type="button"
+          className="text-link size-guide-trigger"
+          onClick={() => guide.current?.showModal()}
+        >
+          Beden ve ölçü rehberi
+        </button>
         <select
           id="purchase-variant"
           required
@@ -184,6 +198,98 @@ export function AddToCart({
         </div>
       </form>
       <FavoriteButton productId={productId} full />
+      <dialog
+        ref={guide}
+        className="size-guide-dialog panel"
+        aria-labelledby={`${formId}-guide`}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) guide.current?.close();
+        }}
+      >
+        <div className="lightbox-toolbar">
+          <h2 id={`${formId}-guide`}>Beden ve ölçü rehberi</h2>
+          <button
+            type="button"
+            className="text-link"
+            onClick={() => guide.current?.close()}
+          >
+            Kapat ✕
+          </button>
+        </div>
+        <p>
+          Bu üründe sunulan seçenekler:{" "}
+          {variants.map((variant) => variant.name).join(", ") ||
+            "Henüz seçenek eklenmedi"}
+          .
+        </p>
+        <h3>Doğru ölçüyü nasıl bulurum?</h3>
+        <p>
+          Üzerinize iyi oturan bir giysiyi düz bir zemine serin. Göğüs, bel ve
+          boy ölçülerini alın. Ayakkabı için ayak uzunluğunu topuktan en uzun
+          parmağa kadar ölçün.
+        </p>
+        <p className="muted">
+          Kalıplar ürüne göre değişebilir. Bu ürün için doğrulanmış santimetre
+          tablosu henüz paylaşılmadı; ürün açıklamasındaki ölçüleri kontrol edin
+          veya satın almadan önce destek alın.
+        </p>
+      </dialog>
+      <div
+        className="mobile-purchase-bar"
+        role="region"
+        aria-label="Hızlı satın alma"
+      >
+        <div>
+          <span>{productName}</span>
+          <strong>{cartMoney(price)}</strong>
+          <small>{selected ? selected.name : "Önce varyant seçin"}</small>
+        </div>
+        <button
+          type="button"
+          className="button"
+          disabled={
+            !available ||
+            adding ||
+            cart.busy ||
+            !cart.ready ||
+            (!!selected && remaining <= 0)
+          }
+          onClick={() => {
+            if (!selected) {
+              form.current?.scrollIntoView({
+                behavior: "instant",
+                block: "center",
+              });
+              form.current?.querySelector("select")?.focus();
+              return;
+            }
+            form.current?.requestSubmit();
+          }}
+        >
+          {adding
+            ? "Ekleniyor…"
+            : !available
+              ? "Tükendi"
+              : selected
+                ? "Sepete Ekle"
+                : "Varyant Seç"}
+        </button>
+        {feedback && (
+          <p role="status">
+            {feedback.ok ? "Sepete eklendi." : feedback.message}
+            {feedback.ok && (
+              <button
+                type="button"
+                className="text-link"
+                onClick={() => cart.setOpen(true)}
+              >
+                {" "}
+                Sepeti Gör
+              </button>
+            )}
+          </p>
+        )}
+      </div>
     </>
   );
 }

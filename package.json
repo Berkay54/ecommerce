@@ -14,7 +14,8 @@
     "prebuild": "prisma generate --config prisma7.config.ts",
     "format": "prettier --write src",
     "test:e2e": "playwright test",
-    "admin:promote": "node scripts/promote-admin.cjs"
+    "admin:promote": "node scripts/promote-admin.cjs",
+    "seed": "node prisma/seed.cjs"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.1",

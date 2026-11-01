@@ -27,7 +27,7 @@ test("storefront and admin stay within mobile, tablet and desktop viewports", as
       await expect(page.locator("html")).toHaveAttribute("lang", "tr");
       const heading =
         route === "/"
-          ? /Tarzını yenile/
+          ? /Kendi ritmini/
           : route.startsWith("/admin")
             ? "Tekrar hoş geldiniz"
             : route === "/cart"
@@ -76,7 +76,7 @@ test("search, sort, category navigation and mobile filters use real routes", asy
 }) => {
   await page.goto("/");
   await page
-    .getByRole("searchbox", { name: "Ürün, kategori veya marka ara" })
+    .getByRole("combobox", { name: "Ürün, kategori veya marka ara" })
     .fill("eşleşmeyen arama 987654321");
   await page.getByRole("button", { name: "Ara", exact: true }).click();
   await expect(page).toHaveURL(/\/products\?q=/);
@@ -143,6 +143,7 @@ test("real product detail, gallery and local favorites", async ({
   page,
 }, testInfo) => {
   await page.goto("/products");
+  await expect(page.locator(".catalog-title:visible h1")).toBeVisible();
   const product = page.locator(".product-image > a").first();
   test.skip(
     !(await product.count()),

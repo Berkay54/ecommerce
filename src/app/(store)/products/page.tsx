@@ -10,7 +10,8 @@ import {
   CatalogSort,
   type FilterValues,
 } from "@/components/catalog-filters";
-export const metadata = { title: "Ürünler · Form & Field" };
+import { brandTitle } from "@/lib/brand";
+export const metadata = { title: brandTitle("Ürünler") };
 type ProductsPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
