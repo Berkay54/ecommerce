@@ -1,3 +1,5 @@
+import { isLocalProductImage } from "@/lib/images";
+
 export class ValidationError extends Error {}
 const fieldLabels: Record<string, string> = {
   name: "Ad",
@@ -60,6 +62,7 @@ export function imageUrls(value: string) {
   if (urls.length > 20)
     throw new ValidationError("En fazla 20 görsel adresi ekleyin.");
   for (const value of urls) {
+    if (isLocalProductImage(value)) continue;
     let url;
     try {
       url = new URL(value);

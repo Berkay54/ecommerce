@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./home-editorial.css";
 import { BRAND_NAME } from "@/lib/brand";
 import { publicIndexing, siteOrigin } from "@/lib/site";
 export const metadata: Metadata = {

@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-02",
+  "mode": "built-in imagegen",
+  "note": "User-requested model photography for four existing demo products. Only the existing cover ProductImage URL and alt fields are updated; old URLs retained here. Local WebP files ship with the application.",
+  "images": [
+    {
+      "key": "bomber",
+      "productId": "seed-demo-utility-bomber-ceket",
+      "imageId": "seed-image-demo-utility-bomber-ceket-1",
+      "oldUrl": "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=80",
+      "name": "Utility Bomber Ceket",
+      "url": "/product-images/model-bomber.webp",
+      "alt": "Utility Bomber Ceket — yapay zekâ ile üretilmiş temsili TEST / DEMO manken çekimi",
+      "prompt": "Photorealistic original fashion e-commerce editorial photograph for ModaLife's explicitly labeled demo product catalog. Single portrait 4:5 image, not a collage. A fictional adult fashion model wearing a matte black utility bomber jacket, zip front, functional pockets, ribbed cuffs and hem, layered over an off-white T-shirt, charcoal relaxed trousers and black shoes. Jacket is the clear focal garment. Pose relaxed front-facing with hands near pockets. Cohesive high-end contemporary Turkish street style, neutral warm light grey limestone studio courtyard background, understated architectural concrete, soft overcast daylight, true natural fabric and skin texture, subtle film grain, 50mm lens, realistic proportions. Composition suited to a portrait product card: whole head with generous 10 percent empty space above and complete outfit including shoes below; subject centered, no close cropping at face, hands or ankles. Outfit fully visible, subject fills 80 percent of image height. One model only. Muted olive stone black off-white and indigo palette, consistent professional lookbook campaign styling. No words, no text, no logos, no brand marks, no watermarks, no border. This is representative fictional fashion imagery, not a claim about an existing manufactured product."
+    },
+    {
+      "key": "sneaker",
+      "productId": "seed-demo-urban-runner-sneaker",
+      "imageId": "seed-image-demo-urban-runner-sneaker-1",
+      "oldUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80",
+      "name": "Urban Runner Sneaker",
+      "url": "/product-images/model-sneaker.webp",
+      "alt": "Urban Runner Sneaker — yapay zekâ ile üretilmiş temsili TEST / DEMO manken çekimi",
+      "prompt": "Photorealistic original fashion e-commerce editorial photograph for ModaLife's explicitly labeled demo product catalog. Single portrait 4:5 image, not a collage. A fictional adult fashion model wearing unbranded off-white textile-and-synthetic running sneakers with sculpted light grey soles, grey tailored jogger trousers and an olive overshirt. Full adult male model sitting on a low pale stone bench, legs naturally forward, sneakers both clearly and prominently visible in lower third. Entire head and shoes visible. The shoe is the focal product, no sport brand logo. Cohesive high-end contemporary Turkish street style, neutral warm light grey limestone studio courtyard background, understated architectural concrete, soft overcast daylight, true natural fabric and skin texture, subtle film grain, 50mm lens, realistic proportions. Composition suited to a portrait product card: whole head with generous 10 percent empty space above and complete outfit including shoes below; subject centered, no close cropping at face, hands or ankles. Outfit fully visible, subject fills 80 percent of image height. One model only. Muted olive stone black off-white and indigo palette, consistent professional lookbook campaign styling. No words, no text, no logos, no brand marks, no watermarks, no border. This is representative fictional fashion imagery, not a claim about an existing manufactured product."
+    },
+    {
+      "key": "sweatshirt",
+      "productId": "seed-demo-heavyweight-oversize-sweatshirt",
+      "imageId": "seed-image-demo-heavyweight-oversize-sweatshirt-1",
+      "oldUrl": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=900&q=80",
+      "name": "Heavyweight Oversize Sweatshirt",
+      "url": "/product-images/model-sweatshirt.webp",
+      "alt": "Heavyweight Oversize Sweatshirt — yapay zekâ ile üretilmiş temsili TEST / DEMO manken çekimi",
+      "prompt": "Photorealistic original fashion e-commerce editorial photograph for ModaLife's explicitly labeled demo product catalog. Single portrait 4:5 image, not a collage. A fictional adult fashion model wearing a heavyweight heather grey oversized crewneck sweatshirt, dropped shoulders, thick cotton texture, ribbed cuffs and hem, no hood, no print, black wide leg trousers. Adult woman with dark hair tucked behind ears, relaxed confident stance, sweatshirt clearly visible from front. Cohesive high-end contemporary Turkish street style, neutral warm light grey limestone studio courtyard background, understated architectural concrete, soft overcast daylight, true natural fabric and skin texture, subtle film grain, 50mm lens, realistic proportions. Composition suited to a portrait product card: whole head with generous 10 percent empty space above and complete outfit including shoes below; subject centered, no close cropping at face, hands or ankles. Outfit fully visible, subject fills 80 percent of image height. One model only. Muted olive stone black off-white and indigo palette, consistent professional lookbook campaign styling. No words, no text, no logos, no brand marks, no watermarks, no border. This is representative fictional fashion imagery, not a claim about an existing manufactured product."
+    },
+    {
+      "key": "tshirt",
+      "productId": "seed-demo-premium-pamuk-tisort",
+      "imageId": "seed-image-demo-premium-pamuk-tisort-1",
+      "oldUrl": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=80",
+      "name": "Premium Pamuk Tişört",
+      "url": "/product-images/model-tshirt.webp",
+      "alt": "Premium Pamuk Tişört — yapay zekâ ile üretilmiş temsili TEST / DEMO manken çekimi",
+      "prompt": "Photorealistic original fashion e-commerce editorial photograph for ModaLife's explicitly labeled demo product catalog. Single portrait 4:5 image, not a collage. A fictional adult fashion model wearing a premium plain off-white cotton regular-fit short sleeve crewneck T-shirt with visible soft fabric texture, tucked loosely into dark indigo straight jeans. Adult male model with warm medium skin and short hair, relaxed front-facing stance, T-shirt clearly visible, no jacket hiding it. Cohesive high-end contemporary Turkish street style, neutral warm light grey limestone studio courtyard background, understated architectural concrete, soft overcast daylight, true natural fabric and skin texture, subtle film grain, 50mm lens, realistic proportions. Composition suited to a portrait product card: whole head with generous 10 percent empty space above and complete outfit including shoes below; subject centered, no close cropping at face, hands or ankles. Outfit fully visible, subject fills 80 percent of image height. One model only. Muted olive stone black off-white and indigo palette, consistent professional lookbook campaign styling. No words, no text, no logos, no brand marks, no watermarks, no border. This is representative fictional fashion imagery, not a claim about an existing manufactured product."
+    }
+  ]
+}

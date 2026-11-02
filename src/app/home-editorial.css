@@ -1,0 +1,802 @@
+@font-face {
+  font-family: "Manrope";
+  src: url("/fonts/manrope-variable.ttf") format("truetype");
+  font-weight: 200 800;
+  font-display: swap;
+}
+
+.fashion-home {
+  --editorial-font: "Manrope", Arial, sans-serif;
+}
+.campaign-slider {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: #262c27;
+  color: #fffdf5;
+}
+.campaign-slides {
+  position: relative;
+  display: grid;
+  min-height: clamp(620px, 48vw, 780px);
+}
+.campaign-slide {
+  grid-area: 1 / 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: inherit;
+  background: #262c27;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 600ms ease,
+    visibility 600ms;
+}
+.campaign-slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  z-index: 1;
+}
+.campaign-photo {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.campaign-photo img {
+  object-fit: cover;
+  object-position: center top;
+}
+.campaign-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgb(16 23 19 / 0.75),
+    rgb(16 23 19 / 0.25) 44%,
+    transparent 75%
+  );
+}
+.campaign-copy {
+  position: relative;
+  z-index: 2;
+  width: min(1320px, calc(100% - 80px));
+  margin-inline: auto;
+  padding-block: 76px 110px;
+}
+.campaign-copy h1,
+.campaign-copy h2 {
+  font-family: "Manrope", Arial, sans-serif;
+  font-size: clamp(54px, 5.8vw, 84px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  max-width: 650px;
+  margin: 0 0 28px;
+  color: #fffdf5;
+  text-wrap: balance;
+}
+.campaign-copy h1 em,
+.campaign-copy h2 em {
+  display: block;
+  font-family: Georgia, serif;
+  font-weight: 400;
+  color: #dfddba;
+}
+.campaign-copy > p {
+  max-width: 320px;
+  font-size: 14px;
+  line-height: 1.85;
+  margin-bottom: 28px;
+  color: #f4f2e8;
+}
+.campaign-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 36px;
+  padding: 15px 22px;
+  min-height: 48px;
+  font-weight: 600;
+  font-size: 12px;
+  color: #233b2c;
+  background: #f5f4e9;
+  border: 1px solid #f5f4e9;
+  transition:
+    background 180ms,
+    color 180ms;
+}
+.campaign-cta:hover {
+  background: #dfe4ce;
+  color: #193323;
+}
+.campaign-footnote {
+  display: block;
+  margin-top: 22px;
+  color: #e2e2d6;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.campaign-wordmark {
+  display: none;
+}
+.campaign-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  max-width: 500px;
+}
+.campaign-offer {
+  padding: 8px 12px;
+  background: #eef0d7;
+  color: #203b28;
+  display: grid;
+  line-height: 1.2;
+}
+.campaign-offer strong {
+  font-size: 24px;
+  font-family: Georgia, serif;
+}
+.campaign-offer span {
+  font-size: 11px;
+}
+.campaign-controls {
+  position: absolute;
+  z-index: 4;
+  bottom: 28px;
+  left: max(40px, calc((100% - 1320px) / 2));
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  color: #fffdf5;
+}
+.campaign-counter {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 1px;
+}
+.campaign-dots,
+.campaign-arrows {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.campaign-controls button {
+  background: transparent;
+  color: inherit;
+  border: 0;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+.campaign-dots button {
+  gap: 8px;
+  font-size: 10px;
+}
+.campaign-dots button > span {
+  display: none;
+}
+.campaign-dots i {
+  width: 25px;
+  height: 2px;
+  background: #c2c5ba;
+}
+.campaign-dots button[aria-current] i {
+  height: 3px;
+  background: #fffdf5;
+}
+.campaign-arrows {
+  gap: 0;
+}
+.campaign-side-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 52px;
+  padding: 0;
+  border: 1px solid #ffffff50;
+  background: #172019a6;
+  color: #fffdf5;
+}
+.campaign-side-arrow:hover {
+  background: #172019e6;
+}
+.campaign-previous {
+  left: 12px;
+}
+.campaign-next {
+  right: 12px;
+}
+@media (max-width: 650px) {
+  .campaign-side-arrow {
+    top: 30%;
+    height: 44px;
+  }
+  .campaign-previous {
+    left: 8px;
+  }
+  .campaign-next {
+    right: 8px;
+  }
+}
+.campaign-controls button:hover {
+  background: #ffffff18;
+}
+.arrow-back {
+  transform: rotate(180deg);
+}
+.campaign-image-credit {
+  position: absolute;
+  bottom: 38px;
+  right: 40px;
+  z-index: 3;
+  color: white;
+  background: #172019c9;
+  padding: 4px 8px;
+  font-size: 9px;
+}
+.campaign-slider a:focus-visible,
+.campaign-slider button:focus-visible {
+  outline-color: #fffdf5;
+}
+.home-manifesto {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  padding-block: 25px;
+  border-bottom: 1px solid var(--line);
+}
+.home-manifesto > span {
+  font-size: 10px;
+  letter-spacing: 1.4px;
+}
+.home-manifesto p {
+  margin: 0;
+  font-family: Georgia, serif;
+  font-size: 22px;
+  font-style: italic;
+}
+.home-manifesto a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+}
+.fashion-home .home-section {
+  padding-top: 78px;
+}
+.fashion-home .section-heading {
+  align-items: end;
+  margin-bottom: 28px;
+}
+.fashion-home .section-heading h2 {
+  font-family: var(--editorial-font);
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  margin-bottom: 9px;
+}
+.fashion-home .section-heading p {
+  color: var(--muted);
+  font-size: 13px;
+}
+.fashion-home .category-index {
+  padding-top: 36px;
+}
+.category-index .section-heading h2 {
+  font-size: 18px;
+  margin: 0;
+}
+.category-index .section-heading {
+  margin-bottom: 18px;
+}
+.category-paths {
+  display: flex;
+  flex-wrap: wrap;
+  border-block: 1px solid var(--line);
+}
+.category-path {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 18px 22px;
+  border-right: 1px solid var(--line);
+  min-width: 130px;
+}
+.category-path:first-child {
+  padding-left: 0;
+}
+.category-path:last-child {
+  border-right: 0;
+}
+.category-path h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+.category-path:hover {
+  background: #eef0e6;
+}
+.winter-editorial {
+  display: grid;
+  grid-template-columns: 1.04fr 1fr;
+  gap: 0 36px;
+  padding-top: 72px;
+  align-items: stretch;
+}
+.editorial-photo {
+  position: relative;
+  overflow: hidden;
+  background: #cdc7b9;
+}
+.editorial-photo img {
+  object-fit: cover;
+}
+.editorial-photo img,
+.fashion-home .product-image img {
+  scale: 1;
+  transition: scale 250ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.fashion-home .product-card:hover .product-image img {
+  transform: none;
+}
+.photo-caption {
+  isolation: isolate;
+}
+.photo-caption::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #35563d;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.photo-caption svg,
+.campaign-cta svg {
+  transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .editorial-photo:hover img,
+  .fashion-home .product-image:hover img {
+    scale: 1.04;
+  }
+  .editorial-photo:hover .photo-caption::before {
+    opacity: 1;
+  }
+  .editorial-photo:hover .photo-caption svg,
+  .campaign-cta:hover svg {
+    transform: translateX(4px);
+  }
+}
+.winter-cover {
+  min-height: 780px;
+}
+.winter-cover img {
+  object-position: center 30%;
+}
+.photo-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 19px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fffdf5;
+  background: #16241cde;
+  font-size: 11px;
+  letter-spacing: 0.8px;
+}
+.winter-story {
+  display: flex;
+  flex-direction: column;
+}
+.winter-heading {
+  flex: 1;
+  padding: 12px 20px 30px;
+}
+.winter-heading h2 {
+  font-family: var(--editorial-font);
+  font-size: clamp(45px, 4.4vw, 67px);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.04em;
+  margin-bottom: 23px;
+}
+.winter-heading h2 em {
+  font-family: Georgia, serif;
+  color: #68704c;
+  font-weight: 400;
+  font-size: 1.2em;
+}
+.winter-heading > p {
+  color: #5d685d;
+  max-width: 310px;
+  line-height: 1.9;
+  font-size: 13px;
+  margin-bottom: 22px;
+}
+.winter-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.winter-detail {
+  aspect-ratio: 4/5;
+}
+.winter-detail img.winter-man {
+  width: 240% !important;
+  max-width: none;
+  left: -132% !important;
+  object-position: 95% 0;
+}
+.winter-detail img.winter-texture {
+  transform: scale(1.65);
+  object-position: center 30%;
+}
+.winter-detail .photo-caption {
+  padding: 14px 12px;
+  font-size: 10px;
+  letter-spacing: 0;
+}
+.editorial-disclaimer {
+  grid-column: 1/-1;
+  font-size: 10px;
+  color: var(--muted);
+  margin: 13px 0 0;
+}
+.fashion-home .product-card {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+}
+.fashion-home .product-image {
+  border-radius: 0;
+}
+.fashion-home .product-caption {
+  padding-inline: 0;
+}
+.fashion-home .product-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+.denim-editorial {
+  margin-top: 84px;
+  display: grid;
+  grid-template-columns: 45% 55%;
+  background: #263b31;
+  color: #f6f3e5;
+}
+.denim-copy {
+  padding: 80px max(40px, calc((100vw - 1320px) / 2));
+  padding-right: 40px;
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  justify-content: center;
+}
+.denim-copy h2 {
+  font-family: var(--editorial-font);
+  font-size: clamp(46px, 4.6vw, 68px);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.04em;
+  margin-bottom: 28px;
+  white-space: nowrap;
+}
+.denim-copy h2 em {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  color: #dce0bb;
+}
+.denim-copy > p {
+  color: #e1e6d9;
+  font-size: 13px;
+  line-height: 1.9;
+  margin-bottom: 28px;
+}
+.denim-note {
+  font-size: 10px;
+  color: #d1d9c8;
+  margin-top: 44px;
+}
+.denim-photo {
+  min-height: 600px;
+}
+.denim-photo img {
+  object-position: center 35%;
+}
+.denim-photo-label {
+  position: absolute;
+  top: 24px;
+  left: 28px;
+  color: #fff;
+  background: #172019b8;
+  padding: 4px 8px;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+.photo-credit {
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
+  font-size: 9px;
+  color: #fff;
+  background: #172019b8;
+  padding: 4px 8px;
+}
+.fashion-home .benefits {
+  margin-top: 64px;
+}
+
+@media (min-width: 1600px) {
+  .campaign-photo img {
+    object-position: center top;
+  }
+}
+@media (max-width: 1000px) {
+  .campaign-slides {
+    min-height: 630px;
+  }
+  .campaign-copy h1,
+  .campaign-copy h2 {
+    font-size: 58px;
+    max-width: 440px;
+  }
+  .campaign-copy > p {
+    max-width: 260px;
+  }
+  .campaign-photo img {
+    object-position: 62% top;
+  }
+  .campaign-photo::after {
+    background: linear-gradient(90deg, #101713cc, #10171366 42%, transparent);
+  }
+  .winter-editorial {
+    gap: 0 20px;
+  }
+  .winter-cover {
+    min-height: 680px;
+  }
+  .winter-heading {
+    padding: 8px 0 28px;
+  }
+  .winter-heading h2 {
+    font-size: 49px;
+  }
+  .winter-details {
+    gap: 10px;
+  }
+  .winter-detail .photo-caption {
+    min-height: 59px;
+  }
+  .winter-detail .photo-caption svg {
+    display: none;
+  }
+  .category-path {
+    gap: 14px;
+    min-width: 110px;
+    padding-inline: 12px;
+  }
+  .denim-copy {
+    padding-inline: 30px;
+  }
+  .denim-copy h2 {
+    font-size: 46px;
+  }
+  .denim-photo {
+    min-height: 520px;
+  }
+  .fashion-home .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 650px) {
+  .campaign-slides {
+    min-height: 660px;
+  }
+  .campaign-slide {
+    align-items: end;
+  }
+  .campaign-photo img {
+    object-position: 65% 0;
+  }
+  .campaign-photo::after {
+    background: linear-gradient(
+      0deg,
+      #101713 0%,
+      #101713e6 15%,
+      #101713a8 38%,
+      transparent 73%
+    );
+  }
+  .campaign-copy {
+    width: calc(100% - 40px);
+    padding: 230px 0 92px;
+  }
+  .campaign-copy h1,
+  .campaign-copy h2 {
+    font-size: 47px;
+    max-width: 100%;
+    margin-bottom: 15px;
+  }
+  .campaign-copy > p {
+    max-width: 280px;
+    font-size: 12px;
+    line-height: 1.7;
+    margin-bottom: 18px;
+  }
+  .campaign-footnote {
+    display: none;
+  }
+  .campaign-cta {
+    padding: 12px 16px;
+    min-height: 46px;
+    gap: 28px;
+  }
+  .campaign-controls {
+    left: 16px;
+    bottom: 17px;
+    gap: 9px;
+  }
+  .campaign-counter {
+    display: none;
+  }
+  .campaign-controls button {
+    min-width: 40px;
+  }
+  .campaign-dots {
+    gap: 0;
+  }
+  .campaign-dots i {
+    width: 21px;
+  }
+  .campaign-arrows {
+    gap: 0;
+  }
+  .campaign-image-credit {
+    right: 12px;
+    top: 12px;
+    bottom: auto;
+    font-size: 8px;
+  }
+  .campaign-offer strong {
+    font-size: 22px;
+  }
+  .home-manifesto {
+    padding-block: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .home-manifesto > span {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+  .home-manifesto p {
+    order: 3;
+    width: 100%;
+    font-size: 20px;
+  }
+  .home-manifesto a {
+    margin-left: auto;
+    font-size: 10px;
+    gap: 8px;
+  }
+  .fashion-home .home-section {
+    padding-top: 46px;
+  }
+  .fashion-home .section-heading h2 {
+    font-size: 25px;
+  }
+  .fashion-home .section-heading {
+    align-items: center;
+  }
+  .fashion-home .section-heading .text-link {
+    font-size: 11px;
+  }
+  .fashion-home .category-index {
+    padding-top: 28px;
+  }
+  .category-index .section-heading h2 {
+    font-size: 17px;
+  }
+  .category-index .section-heading > .text-link {
+    display: none;
+  }
+  .category-paths {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  .category-path {
+    min-width: 120px;
+    padding-block: 16px;
+  }
+  .category-path h3 {
+    font-size: 12px;
+  }
+  .winter-editorial {
+    padding-top: 46px;
+    grid-template-columns: 1fr;
+  }
+  .winter-cover {
+    min-height: 0;
+    aspect-ratio: 4/5;
+  }
+  .photo-caption {
+    padding: 16px;
+    font-size: 10px;
+  }
+  .winter-heading {
+    padding: 30px 0;
+  }
+  .winter-heading h2 {
+    font-size: 52px;
+  }
+  .winter-heading > p {
+    max-width: 330px;
+  }
+  .winter-details {
+    gap: 12px;
+  }
+  .winter-detail .photo-caption {
+    min-height: 0;
+  }
+  .editorial-disclaimer {
+    font-size: 9px;
+  }
+  .fashion-home .product-grid {
+    gap: 20px 12px;
+  }
+  .denim-editorial {
+    margin-top: 50px;
+    grid-template-columns: 1fr;
+  }
+  .denim-photo {
+    grid-row: 1;
+    min-height: 0;
+    aspect-ratio: 4/4.6;
+  }
+  .denim-copy {
+    padding: 38px 24px;
+  }
+  .denim-copy h2 {
+    font-size: 48px;
+  }
+  .denim-note {
+    margin-top: 30px;
+  }
+  .fashion-home .benefits {
+    margin-top: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .campaign-slide,
+  .campaign-cta {
+    transition: none;
+  }
+  .editorial-photo img,
+  .fashion-home .product-image img {
+    scale: 1 !important;
+  }
+  .photo-caption svg,
+  .campaign-cta svg {
+    transform: none !important;
+  }
+}

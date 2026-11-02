@@ -1,33 +1,34 @@
 import type { CampaignSlide } from "@/components/campaign-slider";
+import { BRAND_NAME } from "@/lib/brand";
 export function defaultCampaigns(maxDiscount: number): CampaignSlide[] {
   return [
     {
       id: "season",
-      label: "Yeni sezon / Özen seçkisi",
-      title: "Kendi ritmini",
-      emphasis: "yakala.",
+      label: `Yeni sezon / ${BRAND_NAME} seçkisi`,
+      title: "Şehir soğur.",
+      emphasis: "Stilin kalır.",
       description:
-        "Biraz renk. Biraz özgürlük. Her gün yeniden keşfedeceğin bir stil.",
+        "Katmanlar, güçlü dokular ve sana ait bir duruş. Yeni mevsime kendi ritminde gir.",
       href: "/products?sort=newest",
       action: "Yeni sezonu keşfet",
-      image: "/campaigns/editorial.webp",
-      alt: "Açık havada sarı eşofman takımıyla moda çekimi",
+      image: "/campaigns/winter-city.webp",
+      alt: "Taş bir avluda koyu kaban ve zeytin yeşili ceket giyen iki manken; temsili kış çekimi",
       theme: "forest",
-      note: "Gündelik hayata, özenle.",
+      note: `Sonbahar / Kış — ${BRAND_NAME}`,
     },
     {
       id: "offers",
       label: maxDiscount > 0 ? "Seçili ürünlerde indirim" : "Keşfetmeye değer",
-      title: maxDiscount > 0 ? "İyi seçimler," : "Yeni favorin,",
-      emphasis: maxDiscount > 0 ? "güzel fiyatlar." : "burada.",
+      title: maxDiscount > 0 ? "Aklında kalan," : "Sokağa çık.",
+      emphasis: maxDiscount > 0 ? "üzerinde olsun." : "Kendin ol.",
       description:
         maxDiscount > 0
           ? "Aklındaki parçaya bir adım daha yakınsın. Güncel indirimleri keşfet, favorini seç."
           : "Gardırobuna yeni bir hikâye ekle. Sana iyi gelen parçaları keşfet.",
       href: maxDiscount > 0 ? "/products?campaign=1" : "/products",
       action: maxDiscount > 0 ? "İndirimleri keşfet" : "Koleksiyonu keşfet",
-      image: "/campaigns/street.webp",
-      alt: "Bordo kaban ve alışveriş çantalarıyla şehir stili",
+      image: "/campaigns/winter-layers.webp",
+      alt: "Deve tüyü kaban, triko ve jean giyen manken; temsili sezon çekimi",
       theme: "sand",
       note: "Güncel fiyatlar ürün sayfalarındadır.",
       ...(maxDiscount > 0 ? { offer: "%" + maxDiscount + "'ye" } : {}),
@@ -36,13 +37,13 @@ export function defaultCampaigns(maxDiscount: number): CampaignSlide[] {
       id: "edit",
       label: "Az parça, çok olasılık",
       title: "Her güne",
-      emphasis: "biraz özen.",
+      emphasis: "biraz stil.",
       description:
         "Rahat kalıplar, sade detaylar. Günün nereye götürürse, stilin seninle gelsin.",
       href: "/products?featured=1",
       action: "Seçkiyi incele",
-      image: "/campaigns/everyday.webp",
-      alt: "Ceket ve rahat pantolonla sade şehir stili",
+      image: "/campaigns/denim-city.webp",
+      alt: "Jean ceket ve mavi jean pantolonla erkek manken; temsili şehir çekimi",
       theme: "wine",
       note: "Senin stilin. Senin hikâyen.",
     },

@@ -1,5 +1,11 @@
 # Özen tasarım bağlamı
 
+## 2 Kasım 2026 — mankenli sezon vitrini
+
+Kullanıcının Loft referansı ve temsili moda çekimi onayıyla ana sayfa genişletildi: tam genişlikte fotoğraf slaytı, büyük bir dikey manken çekimiyle eşleşen asimetrik kış kolajı, denim hikâyesi ve gerçek katalogdan dörder ürün. Orman yeşili/krem kimlik korunur; yerel Manrope başlıklar Georgia italik vurguyla eşleşir. Yönetim ve alışveriş akışlarının görsel sistemi değiştirilmez. İlgili stiller `src/app/home-editorial.css` içinde ayrıdır. Yeni görseller `public/campaigns/winter-city.webp`, `winter-layers.webp`, `denim-city.webp` dosyalarıdır; temsili/AI çekimleri olarak açıklanır. Kaynaklar ve promptlar `docs/HOMEPAGE-ART-DIRECTION.md` içindedir.
+
+21st araştırması: Elegant Carousel (10025). Mevcut CampaignSlider ve ProductGrid yeniden kullanılır; admin kampanyaları, klavye/dokunma/oynatma kontrolleri ve reduced-motion desteği korunur.
+
 ## Alışveriş detayları ve işletme ekranları
 
 Ürün galerisinde yerel dialog ile büyütme ve yakınlaştırma; doğrulanmamış ölçü üretmeyen beden rehberi; mobilde aynı sepet formunu kullanan sabit satın alma çubuğu bulunur. Arama alanı mevcut header ölçülerini koruyan klavyeli ürün/kategori önerileriyle genişletildi. Yorumlar yalnızca onaylı satın alma kayıtlarından gelir. Kampanya, yorum, iade ve bildirim yönetimi mevcut admin panelinde sade formlar/paneller kullanır. Harici UI bağımlılığı eklenmedi.

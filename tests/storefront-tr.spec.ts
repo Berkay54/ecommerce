@@ -27,7 +27,7 @@ test("storefront and admin stay within mobile, tablet and desktop viewports", as
       await expect(page.locator("html")).toHaveAttribute("lang", "tr");
       const heading =
         route === "/"
-          ? /Kendi ritmini/
+          ? /Şehir soğur/
           : route.startsWith("/admin")
             ? "Tekrar hoş geldiniz"
             : route === "/cart"

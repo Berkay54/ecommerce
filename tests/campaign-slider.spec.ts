@@ -6,7 +6,7 @@ test("kampanya slaytları klavye, kontroller ve bağlantılarla çalışır", as
   await page.goto("/");
   const slider = page.getByRole("region", { name: "Sezon kampanyaları" });
   await expect(
-    slider.getByRole("heading", { name: "Kendi ritmini yakala." }),
+    slider.getByRole("heading", { name: "Şehir soğur. Stilin kalır." }),
   ).toBeVisible();
   const next = slider.getByRole("button", { name: "Sonraki kampanya" });
   await next.click();
@@ -18,7 +18,7 @@ test("kampanya slaytları klavye, kontroller ve bağlantılarla çalışır", as
   await expect(cta).toHaveAttribute("href", /\/products/);
   await next.press("ArrowRight");
   await expect(
-    slider.getByRole("heading", { name: "Her güne biraz özen." }),
+    slider.getByRole("heading", { name: "Her güne biraz stil." }),
   ).toBeVisible();
   await slider.getByRole("button", { name: "Önceki kampanya" }).click();
   await expect(slider.locator(".campaign-slide.is-active")).toHaveAttribute(
@@ -26,13 +26,15 @@ test("kampanya slaytları klavye, kontroller ve bağlantılarla çalışır", as
     /2 \/ 3/,
   );
   await slider
-    .getByRole("button", { name: "Yeni sezon / Özen seçkisi slaydını göster" })
+    .getByRole("button", {
+      name: "Yeni sezon / ModaLife seçkisi slaydını göster",
+    })
     .click();
   await expect(
-    slider.getByRole("heading", { name: "Kendi ritmini yakala." }),
+    slider.getByRole("heading", { name: "Şehir soğur. Stilin kalır." }),
   ).toBeVisible();
   // Manual selection pauses rotation, including after focus leaves the stage.
-  await page.getByRole("link", { name: "Özen ile keşfet" }).focus();
+  await page.getByRole("link", { name: "ModaLife ile keşfet" }).focus();
   await page.clock.install();
   await page.clock.fastForward(14000);
   await expect(slider.locator(".campaign-slide.is-active")).toHaveAttribute(
@@ -59,14 +61,14 @@ test("otomatik geçiş durdurulabilir ve yeniden oynatılabilir", async ({
   );
   await slider.getByRole("button", { name: "Slaytları durdur" }).click();
   await page.mouse.move(0, 0);
-  await page.getByRole("link", { name: "Özen ile keşfet" }).focus();
+  await page.getByRole("link", { name: "ModaLife ile keşfet" }).focus();
   await page.clock.fastForward(14000);
   await expect(slider.locator(".campaign-slide.is-active")).toHaveAttribute(
     "aria-label",
     /2 \/ 3/,
   );
   await slider.getByRole("button", { name: "Slaytları oynat" }).click();
-  await page.getByRole("link", { name: "Özen ile keşfet" }).focus();
+  await page.getByRole("link", { name: "ModaLife ile keşfet" }).focus();
   await page.mouse.move(0, 0);
   await page.clock.fastForward(6700);
   await expect(slider.locator(".campaign-slide.is-active")).toHaveAttribute(
@@ -78,7 +80,10 @@ test("otomatik geçiş durdurulabilir ve yeniden oynatılabilir", async ({
   );
   await page.clock.runFor(150);
   await expect(slider).not.toBeInViewport();
-  await expect(slider.locator(".campaign-slides")).toHaveAttribute("aria-live", "polite");
+  await expect(slider.locator(".campaign-slides")).toHaveAttribute(
+    "aria-live",
+    "polite",
+  );
   await page.clock.fastForward(14000);
   await expect(slider.locator(".campaign-slide.is-active")).toHaveAttribute(
     "aria-label",
@@ -93,7 +98,7 @@ test("hareket azaltma tercihinde otomatik geçiş kapanır; vitrin tüm ekranlar
   await page.goto("/");
   const slider = page.getByRole("region", { name: "Sezon kampanyaları" });
   await expect(
-    slider.getByRole("heading", { name: "Kendi ritmini yakala." }),
+    slider.getByRole("heading", { name: "Şehir soğur. Stilin kalır." }),
   ).toBeVisible();
   await expect(
     slider.getByRole("button", { name: "Slaytları durdur" }),

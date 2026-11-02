@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma skills sync || exit 0",
+    "postinstall": "npm run db:generate",
     "contract:emit": "prisma contract emit",
     "db:generate": "prisma generate --config prisma7.config.ts",
     "typecheck": "next typegen && tsc --noEmit",

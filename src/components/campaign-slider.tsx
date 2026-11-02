@@ -110,10 +110,6 @@ export function CampaignSlider({ slides }: { slides: CampaignSlide[] }) {
             inert={index !== active}
           >
             <div className="campaign-copy">
-              <span className="campaign-eyebrow">
-                <span />
-                {slide.label}
-              </span>
               {index === 0 ? (
                 <h1>
                   {slide.title}
@@ -126,10 +122,18 @@ export function CampaignSlider({ slides }: { slides: CampaignSlide[] }) {
                 </h2>
               )}
               <p>{slide.description}</p>
-              <Link href={slide.href} className="campaign-cta">
-                {slide.action}
-                <Icon name="arrow" width={20} />
-              </Link>
+              <div className="campaign-actions">
+                <Link href={slide.href} className="campaign-cta">
+                  {slide.action}
+                  <Icon name="arrow" width={20} />
+                </Link>
+                {slide.offer && (
+                  <div className="campaign-offer">
+                    <strong>{slide.offer}</strong>
+                    <span>varan indirimler</span>
+                  </div>
+                )}
+              </div>
               <span className="campaign-footnote">{slide.note}</span>
             </div>
             <div className="campaign-photo">
@@ -138,26 +142,21 @@ export function CampaignSlider({ slides }: { slides: CampaignSlide[] }) {
                 unoptimized={slide.image.startsWith("https://")}
                 alt={slide.alt}
                 fill
-                sizes="(max-width: 650px) 100vw, 55vw"
+                sizes="100vw"
                 preload={index === 0}
               />
-              <span className="campaign-photo-note">
-                Stil ilhamı · Temsili görsel
-              </span>
               <span className="campaign-wordmark" aria-hidden="true">
                 {BRAND_WORDMARK}
               </span>
             </div>
-            {slide.offer && (
-              <div className="campaign-offer">
-                <strong>{slide.offer}</strong>
-                <span>varan indirimler</span>
-              </div>
-            )}
           </div>
         ))}
       </div>
       <div className="campaign-controls">
+        <span className="campaign-counter" aria-hidden="true">
+          {String(active + 1).padStart(2, "0")} /{" "}
+          {String(slides.length).padStart(2, "0")}
+        </span>
         <div className="campaign-dots" aria-label="Kampanya seçimi">
           {slides.map((slide, index) => (
             <button
@@ -182,22 +181,27 @@ export function CampaignSlider({ slides }: { slides: CampaignSlide[] }) {
               <span aria-hidden="true">{paused ? "▷" : "Ⅱ"}</span>
             </button>
           )}
-          <button
-            type="button"
-            aria-label="Önceki kampanya"
-            onClick={() => select(active - 1)}
-          >
-            <Icon name="arrow" className="arrow-back" width={18} />
-          </button>
-          <button
-            type="button"
-            aria-label="Sonraki kampanya"
-            onClick={() => select(active + 1)}
-          >
-            <Icon name="arrow" width={18} />
-          </button>
         </div>
       </div>
+      <button
+        className="campaign-side-arrow campaign-previous"
+        type="button"
+        aria-label="Önceki kampanya"
+        onClick={() => select(active - 1)}
+      >
+        <Icon name="arrow" className="arrow-back" width={22} />
+      </button>
+      <button
+        className="campaign-side-arrow campaign-next"
+        type="button"
+        aria-label="Sonraki kampanya"
+        onClick={() => select(active + 1)}
+      >
+        <Icon name="arrow" width={22} />
+      </button>
+      <span className="campaign-image-credit">
+        Stil ilhamı · Temsili görseller
+      </span>
     </section>
   );
 }

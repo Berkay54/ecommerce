@@ -10,6 +10,20 @@ test("image rules preserve URLs, ordering and alt text and reject unsafe input",
     { url: "http://example.com/second.jpg", alt: "Second" },
   ];
   expect(productImages(JSON.stringify(images))).toEqual(images);
+  const localImage = {
+    url: "/product-images/model-bomber.webp",
+    alt: "Temsili manken çekimi",
+  };
+  expect(productImages(JSON.stringify([localImage]))).toEqual([localImage]);
+  for (const url of [
+    "/product-images/../icon.svg",
+    "//example.com/image.webp",
+    "/product-images/%2e%2e/image.webp",
+    "/product-images/photo.svg",
+    "/product-images/model.webp?redirect=1",
+  ]) {
+    expect(() => productImages(JSON.stringify([{ url, alt: "" }]))).toThrow();
+  }
   expect(() =>
     productImages(JSON.stringify([{ url: "javascript:alert(1)", alt: "" }])),
   ).toThrow();

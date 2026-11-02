@@ -1,0 +1,23 @@
+{
+  "mode": "built-in imagegen",
+  "images": [
+    {
+      "productId": "seed-demo-straight-fit-denim",
+      "imageId": "seed-image-demo-straight-fit-denim-1",
+      "name": "Straight Fit Denim",
+      "url": "/product-images/model-straight-denim.webp",
+      "oldUrl": "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=900&q=80",
+      "alt": "Straight Fit Denim — yapay zekâ ile üretilmiş temsili TEST / DEMO manken çekimi",
+      "prompt": "Create a single photorealistic original fashion lookbook portrait 4:5 for ModaLife's explicitly labeled demo clothing catalog. One fictional adult model, entire head and shoes within frame, centered composition with generous breathing room, outfit fully visible. Soft overcast daylight in a warm pale limestone courtyard with an olive tree, premium understated contemporary Turkish street style, authentic fabric and skin texture, muted natural colors, subtle natural editorial photography, consistent visual family with a premium cream stone fashion catalog. No text, no logos, no watermark, no border, no collage. This is representative fictional demo-product imagery. An adult man with short dark hair wearing classic medium-wash blue STRAIGHT-LEG DENIM JEANS, mid-rise waistband, five pocket construction, subtle denim fading, straight consistent width leg to the hem, off-white plain T-shirt tucked in and white minimalist sneakers. Standing facing forward in a relaxed pose with one hand in a front jeans pocket, one foot a little forward. The blue jeans are the focal garment and occupy clearly the lower two thirds, well lit, no outer jacket covering the waist."
+    },
+    {
+      "productId": "seed-demo-relaxed-fit-pantolon",
+      "imageId": "seed-image-demo-relaxed-fit-pantolon-1",
+      "name": "Relaxed Fit Pantolon",
+      "url": "/product-images/model-relaxed-trousers.webp",
+      "oldUrl": "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=900&q=80",
+      "alt": "Relaxed Fit Pantolon — yapay zekâ ile üretilmiş temsili TEST / DEMO manken çekimi",
+      "prompt": "Create a single photorealistic original fashion lookbook portrait 4:5 for ModaLife's explicitly labeled demo clothing catalog. One fictional adult model, entire head and shoes within frame, centered composition with generous breathing room, outfit fully visible. Soft overcast daylight in a warm pale limestone courtyard with an olive tree, premium understated contemporary Turkish street style, authentic fabric and skin texture, muted natural colors, subtle natural editorial photography, consistent visual family with a premium cream stone fashion catalog. No text, no logos, no watermark, no border, no collage. This is representative fictional demo-product imagery. An adult woman with shoulder-length dark brown hair wearing warm BEIGE COTTON RELAXED-FIT TROUSERS, comfortable waist, roomy straight wide legs, visible side pockets, matte woven cotton, NOT denim. Paired with a fitted plain charcoal short-sleeve knit top tucked into the trousers, cream low-top sneakers. Relaxed three-quarter walking pose turned slightly left, one hand in the trouser pocket, beside a broad stone stair. The beige trousers are the focal garment, full waistband and hems visible. Distinct pose and beige trouser color distinguish this image from a blue denim catalog image."
+    }
+  ]
+}

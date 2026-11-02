@@ -12,6 +12,7 @@ import {
 import { defaultCampaigns } from "@/lib/home-campaigns";
 import { ProductGrid } from "@/components/catalog";
 import { Icon, type IconName } from "@/components/icons";
+import { BRAND_NAME, BRAND_WORDMARK } from "@/lib/brand";
 export default function Home() {
   return (
     <Suspense fallback={<Loading />}>
@@ -109,22 +110,19 @@ async function HomeContent() {
     },
   ];
   return (
-    <main className="wrap home-page">
+    <main className="home-page fashion-home">
       <CampaignSlider slides={slides} />
-      <div className="home-manifesto">
+      <div className="home-manifesto wrap">
         <span>GİY. HİSSET. KENDİN OL.</span>
         <p>İyi stil, küçük seçimlerle başlar.</p>
         <Link href="/products">
-          Özen ile keşfet <Icon name="arrow" width={18} />
+          {BRAND_NAME} ile keşfet <Icon name="arrow" width={18} />
         </Link>
       </div>
-      <section className="home-section" id="categories">
+      <section className="home-section category-index wrap" id="categories">
         <div className="section-heading">
           <div>
-            <span className="editorial-kicker">
-              01 / Kendine bir yerden başla
-            </span>
-            <h2>Kategorileri Keşfet</h2>
+            <h2>Nereden başlayalım?</h2>
           </div>
           <Link href="/kategoriler" className="text-link">
             Tüm Kategoriler
@@ -132,33 +130,16 @@ async function HomeContent() {
           </Link>
         </div>
         {categories.length ? (
-          <div className="category-grid">
+          <div className="category-paths">
             {categories.map((category) => {
-              const image = category.products[0]?.images[0];
               return (
                 <Link
-                  className="category-card"
+                  className="category-path"
                   href={`/products?category=${encodeURIComponent(category.slug)}`}
                   key={category.id}
                 >
-                  <div>
-                    {image ? (
-                      <Image
-                        src={image.url}
-                        alt={image.alt || category.name}
-                        fill
-                        unoptimized
-                        sizes="180px"
-                      />
-                    ) : (
-                      <Icon name="bag" width={36} height={36} />
-                    )}
-                  </div>
                   <h3>{category.name}</h3>
-                  <span>
-                    Keşfet
-                    <Icon name="arrow" width={16} />
-                  </span>
+                  <Icon name="arrow" width={19} />
                 </Link>
               );
             })}
@@ -170,10 +151,79 @@ async function HomeContent() {
           </div>
         )}
       </section>
-      <section className="home-section">
+      <section className="winter-editorial wrap" aria-labelledby="winter-title">
+        <Link
+          href="/products?sort=newest"
+          className="winter-cover editorial-photo"
+        >
+          <Image
+            src="/campaigns/winter-layers.webp"
+            alt="Taş merdivenlerde kaban, triko ve jean ile kış stili; temsili çekim"
+            fill
+            sizes="(max-width: 650px) 100vw, 50vw"
+          />
+          <span className="photo-caption">
+            SOĞUK HAVALAR, SICAK DOKULAR <Icon name="arrow" width={22} />
+          </span>
+        </Link>
+        <div className="winter-story">
+          <div className="winter-heading">
+            <h2 id="winter-title">
+              Kışa
+              <br />
+              kendi tarzında
+              <br />
+              <em>gir.</em>
+            </h2>
+            <p>
+              Şehrin temposu değişir. Senin tavrın değişmez. Üst üste giy,
+              dışarı çık, mevsimi kendine uydur.
+            </p>
+            <Link className="text-link" href="/products?sort=newest">
+              Yeni sezonu keşfet <Icon name="arrow" width={18} />
+            </Link>
+          </div>
+          <div className="winter-details">
+            <Link
+              href="/products?q=ceket"
+              className="winter-detail editorial-photo"
+            >
+              <Image
+                src="/campaigns/winter-city.webp"
+                alt="Zeytin yeşili bomber ceketle erkek manken; temsili çekim"
+                fill
+                sizes="(max-width: 650px) 50vw, 23vw"
+                className="winter-man"
+              />
+              <span className="photo-caption">
+                Dışarıda hayat var <Icon name="arrow" width={18} />
+              </span>
+            </Link>
+            <Link
+              href="/products?q=triko"
+              className="winter-detail editorial-photo"
+            >
+              <Image
+                src="/campaigns/winter-layers.webp"
+                alt="Kabanın altında krem rengi dokulu triko; temsili çekim"
+                fill
+                sizes="(max-width: 650px) 50vw, 23vw"
+                className="winter-texture"
+              />
+              <span className="photo-caption">
+                Katman katman <Icon name="arrow" width={18} />
+              </span>
+            </Link>
+          </div>
+        </div>
+        <p className="editorial-disclaimer">
+          {BRAND_NAME} stil günlüğü · Yapay zekâ ile üretilmiş temsili çekimler.
+          Ürün detayları katalogda.
+        </p>
+      </section>
+      <section className="home-section wrap">
         <div className="section-heading">
           <div>
-            <span className="editorial-kicker">02 / Özen seçkisi</span>
             <h2>Öne Çıkan Ürünler</h2>
             <p>Seçiminizi kolaylaştıran, özenle seçilmiş parçalar.</p>
           </div>
@@ -182,31 +232,41 @@ async function HomeContent() {
             <Icon name="arrow" width={16} />
           </Link>
         </div>
-        <ProductGrid products={featured} />
+        <ProductGrid products={featured.slice(0, 4)} />
       </section>
-      <section className="campaign-banner editorial-banner">
-        <div className="editorial-banner-image">
+      <section className="denim-editorial" aria-labelledby="denim-title">
+        <div className="denim-copy">
+          <h2 id="denim-title">
+            Bir jean.
+            <br />
+            <em>Bin ihtimal.</em>
+          </h2>
+          <p>
+            Sabahın ilk kahvesinden şehrin son ışıklarına.
+            <br />
+            Her plana uyan parçaları keşfet.
+          </p>
+          <Link className="campaign-cta" href="/products?q=jean">
+            Jean dünyasına gir <Icon name="arrow" width={20} />
+          </Link>
+          <span className="denim-note">
+            Kendi yolunu çiz. Kendi stilini giy.
+          </span>
+        </div>
+        <div className="denim-photo editorial-photo">
           <Image
-            src="/campaigns/street.webp"
-            alt="Şehirde stil ilhamı"
+            src="/campaigns/denim-city.webp"
+            alt="Jean ve ceketle erkek manken; temsili şehir stili"
             fill
-            sizes="(max-width: 650px) 100vw, 40vw"
+            sizes="(max-width: 650px) 100vw, 55vw"
           />
+          <span className="denim-photo-label">{BRAND_WORDMARK} / DENIM</span>
+          <span className="photo-credit">Stil ilhamı · Temsili görsel</span>
         </div>
-        <div>
-          <span className="season-label">Stil, detaylarda saklı</span>
-          <h2>Her günün favorileri.</h2>
-          <p>Her gün yeniden giymek isteyeceğin parçalarla tanış.</p>
-        </div>
-        <Link className="button" href="/products?featured=1">
-          Koleksiyonu Keşfet
-          <Icon name="arrow" width={18} />
-        </Link>
       </section>
-      <section className="home-section">
+      <section className="home-section wrap">
         <div className="section-heading">
           <div>
-            <span className="editorial-kicker">03 / Keşfetmeye devam</span>
             <h2>Yeni Gelenler</h2>
             <p>Koleksiyona en son katılanlarla tanışın.</p>
           </div>
@@ -215,9 +275,9 @@ async function HomeContent() {
             <Icon name="arrow" width={16} />
           </Link>
         </div>
-        <ProductGrid products={newest} />
+        <ProductGrid products={newest.slice(0, 4)} />
       </section>
-      <section className="benefits" aria-label="Alışveriş avantajları">
+      <section className="benefits wrap" aria-label="Alışveriş avantajları">
         {benefits.map((benefit) => (
           <div key={benefit.title}>
             <Icon name={benefit.icon} width={28} height={28} />

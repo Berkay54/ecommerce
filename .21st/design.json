@@ -1,0 +1,11 @@
+{
+  "decisions": [
+    {
+      "date": "2026-11-02",
+      "scope": "storefront homepage",
+      "direction": "Model-led city winter editorial, forest and cream, full-width campaign slider and asymmetric winter collage",
+      "assets": "User approved representative fashion photography; three original AI campaign images, separate from actual catalog product images",
+      "implementation": "Existing CampaignSlider and ProductGrid, local Manrope with serif emphasis, scoped home-editorial.css"
+    }
+  ]
+}
