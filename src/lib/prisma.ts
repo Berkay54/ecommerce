@@ -7,9 +7,17 @@ function createClient() {
   if (!connectionString) throw new Error("DATABASE_URL is not configured.");
   const url = new URL(connectionString);
   const schema = url.searchParams.get("schema") ?? "public";
+  // Each serverless instance keeps a single connection so concurrent Vercel
+  // functions don't exhaust the Supabase pooler; local dev keeps a small pool.
+  const serverless = !!process.env.VERCEL;
   return new PrismaClient({
     adapter: new PrismaPg(
-      { connectionString, connectionTimeoutMillis: 5000, max: 5 },
+      {
+        connectionString,
+        connectionTimeoutMillis: 5000,
+        max: serverless ? 1 : 5,
+        idleTimeoutMillis: serverless ? 5000 : 10000,
+      },
       { schema },
     ),
   });
