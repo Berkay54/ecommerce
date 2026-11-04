@@ -19,7 +19,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr" data-scroll-behavior="smooth">
-      <body>{children}</body>
+      {/* Tarayıcı eklentileri (ör. ColorZilla) body'ye özellik ekler. */}
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }

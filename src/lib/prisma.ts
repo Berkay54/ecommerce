@@ -14,6 +14,16 @@ function createClient() {
     ),
   });
 }
-export const prisma = globalForPrisma.prisma ?? createClient();
 // Share one bounded pool across route bundles in the same Node process.
-globalForPrisma.prisma = prisma;
+function client() {
+  return (globalForPrisma.prisma ??= createClient());
+}
+// Created on first use, so `next build` can load route modules without
+// DATABASE_URL; queries still fail clearly if it is missing at runtime.
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_target, property) {
+    const instance = client();
+    const value = Reflect.get(instance, property, instance);
+    return typeof value === "function" ? value.bind(instance) : value;
+  },
+});
