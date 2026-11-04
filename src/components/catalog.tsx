@@ -22,10 +22,22 @@ export function ProductGrid({ products }: { products: CatalogProduct[] }) {
             ? Math.round((1 - Number(p.price) / Number(p.comparePrice)) * 100)
             : 0;
         const available = p.variants.some((v) => v.stock > 0);
+        const inStock = p.variants.filter((v) => v.stock > 0);
+        const shortNames = inStock.every((v) => v.name.length <= 4);
+        const options = inStock.length
+          ? shortNames
+            ? inStock.map((v) => v.name).join(" · ")
+            : `${inStock.length} seçenek`
+          : "";
+        const hoverImage = p.images[1];
         return (
           <article className="product-card" key={p.id}>
             <div className="product-image">
-              <Link href={`/products/${p.slug}`} aria-label={p.name}>
+              <Link
+                href={`/products/${p.slug}`}
+                aria-label={p.name}
+                className={hoverImage ? "has-hover-image" : undefined}
+              >
                 {p.images[0] ? (
                   <Image
                     src={p.images[0].url}
@@ -36,6 +48,22 @@ export function ProductGrid({ products }: { products: CatalogProduct[] }) {
                   />
                 ) : (
                   <span className="no-image">Görsel hazırlanıyor</span>
+                )}
+                {hoverImage && (
+                  <Image
+                    src={hoverImage.url}
+                    alt=""
+                    aria-hidden
+                    fill
+                    unoptimized
+                    className="hover-image"
+                    sizes="(max-width: 650px) 50vw, (max-width: 1000px) 33vw, 25vw"
+                  />
+                )}
+                {available && (
+                  <span className="card-quick" aria-hidden>
+                    İncele <Icon name="arrow" width={16} />
+                  </span>
                 )}
               </Link>
               <FavoriteButton productId={p.id} />
@@ -61,7 +89,7 @@ export function ProductGrid({ products }: { products: CatalogProduct[] }) {
                 )}
               </div>
               <span className={`card-stock${available ? "" : " unavailable"}`}>
-                {available ? "Stokta" : "Tükendi"}
+                {available ? options || "Stokta" : "Tükendi"}
               </span>
             </div>
           </article>

@@ -132,14 +132,28 @@ async function HomeContent() {
         {categories.length ? (
           <div className="category-paths">
             {categories.map((category) => {
+              const cover = category.products[0]?.images[0];
               return (
                 <Link
-                  className="category-path"
+                  className={`category-path${cover ? " has-cover" : ""}`}
                   href={`/products?category=${encodeURIComponent(category.slug)}`}
                   key={category.id}
                 >
-                  <h3>{category.name}</h3>
-                  <Icon name="arrow" width={19} />
+                  {cover && (
+                    <span className="category-cover">
+                      <Image
+                        src={cover.url}
+                        alt=""
+                        fill
+                        unoptimized
+                        sizes="(max-width: 650px) 45vw, 20vw"
+                      />
+                    </span>
+                  )}
+                  <span className="category-label">
+                    <h3>{category.name}</h3>
+                    <Icon name="arrow" width={19} />
+                  </span>
                 </Link>
               );
             })}
