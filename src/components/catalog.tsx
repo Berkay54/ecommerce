@@ -271,7 +271,12 @@ export function StoreFooter() {
         </div>
       </div>
       <div className="wrap footer-bottom">
-        <p>© 2026 {BRAND_NAME}. Tüm hakları saklıdır.</p>
+        <p>
+          © 2026 {BRAND_NAME}. Tüm hakları saklıdır. · Konsept çalışma, tasarım:{" "}
+          <a href="https://dablabs.net/" target="_blank" rel="noopener">
+            DAB Labs
+          </a>
+        </p>
         <span>Özenle seçin, keyifle kullanın.</span>
       </div>
     </footer>
